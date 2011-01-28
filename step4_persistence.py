@@ -3,6 +3,7 @@ Compute persistence and create a persistence diagram.
 
 Much of this code was supplied by Dimitriy Morozov
 
+(c) Arno Klein  .  arno@binarybottle.com  .  2010
 """
 
 import sys, os
@@ -12,8 +13,9 @@ import numpy as np
 import pylab as plt
 from itertools import combinations
 
-base_path = '/projects/topology_2010/'
-out_path = base_path + 'output/tables/'
+from settings import table_path
+
+out_path = './output/tables/'
 
 plot_persistence_diagrams = 0
 run_dionysus = 1
@@ -21,20 +23,12 @@ if run_dionysus:
   from dionysus import Simplex, DynamicPersistenceChains, Filtration, data_dim_cmp
   import time
 kskeleton = 3  # A k-simplex has k+1 vertices
-run_rips = 0  # Set to 1 to compute the Rips complex; else frequency filtration
-if run_rips:
-  import rips_pairwise_array
-  #max_rips = 20
-  in_table_path = base_path + 'output/tables/ROIxTR/'
-  in_table_path_end = '_ROIvsTR.csv'
-  out_path_end = '_persistence_diagram_Rips.csv'
-else:
-  in_table_path = base_path + 'output/tables/ROIxTR_binary/'
-  in_table_path_end = '_ROIvsTR_binary.csv'
-  in_file_path = base_path + 'output/tables/ROIxTR_binary_nconcurrences/'
-  in_file_path_end = '_nconcurrences.txt'
-  out_path_end1 = '_persistence' + str(kskeleton) + '_diagram_Freq.csv'
-  out_path_end2 = '_persistence' + str(kskeleton) + '_data_Freq.csv'
+table_path = base_path + 'output/tables/ROIxTR_binary/'
+table_path_end = '_ROIvsTR_binary.csv'
+in_file_path = base_path + 'output/tables/ROIxTR_binary_nconcurrences/'
+in_file_path_end = '_nconcurrences.txt'
+out_path_end1 = '_persistence' + str(kskeleton) + '_diagram_Freq.csv'
+out_path_end2 = '_persistence' + str(kskeleton) + '_data_Freq.csv'
 first_column = 0 # 0-based
 reverse_filtration_order = 1
 set_filtration1_to_0 = 1
@@ -52,7 +46,7 @@ if __name__ == '__main__':
   where each row is a voxel and columns are fMRI TRs.
   """
   # Iterate over subjects
-  for table_file in glob(in_table_path + '*' + in_table_path_end):
+  for table_file in glob(table_path + '*' + table_path_end):
     table_id = table_file.split('/')[-1].split('.')[0]
     print('Table: ' + table_file)
     if 1==1:
@@ -84,25 +78,22 @@ if __name__ == '__main__':
         table_array[irow] = table[irow]
 
       # Import file: 
-      if run_rips: 
-        pass
+      # Load frequency filtration numbers:        
+      num_file = in_file_path + table_id + in_file_path_end
+      print('File: ' + num_file)
+      nconcurrences = np.loadtxt(num_file)
+      if set_filtration1_to_0:
+        nconcurrences = nconcurrences - 1
+      # Convert number of concurrences to filtration order (max is time 0):
+      # FIX!
+      if reverse_filtration_order:
+        max_nconcurrences = max(nconcurrences)
+        print('Maximum number of concurrences = ' + str(max_nconcurrences))
+        nfiltrations = max_nconcurrences - nconcurrences
       else:
-        # Load frequency filtration numbers:        
-        num_file = in_file_path + table_id + in_file_path_end
-        print('File: ' + num_file)
-        nconcurrences = np.loadtxt(num_file)
-        if set_filtration1_to_0:
-          nconcurrences = nconcurrences - 1
-        # Convert number of concurrences to filtration order (max is time 0):
-        # FIX!
-        if reverse_filtration_order:
-          max_nconcurrences = max(nconcurrences)
-          print('Maximum number of concurrences = ' + str(max_nconcurrences))
-          nfiltrations = max_nconcurrences - nconcurrences
-        else:
-          nfiltrations = nconcurrences
-          max_nconcurrences = max(nfiltrations)
-          print('Maximum number of concurrences = ' + str(max_nconcurrences))
+        nfiltrations = nconcurrences
+        max_nconcurrences = max(nfiltrations)
+        print('Maximum number of concurrences = ' + str(max_nconcurrences))
         
       ###############
       # Persistence #

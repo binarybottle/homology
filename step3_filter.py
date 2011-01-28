@@ -3,6 +3,8 @@ Run frequency filtration on a binary table.
 
 Filter the table by the number of times (frequency) that the active regions 
 of a given column are repeated as a subset of the active regions of the other columns.
+
+(c) Arno Klein  .  arno@binarybottle.com  .  2010
 """
 
 import sys, os
@@ -10,6 +12,8 @@ import csv
 from glob import glob
 import numpy as np
 import pylab as plt
+
+from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2
 
 filter_by_frequency = 1
 save_tables = 1
@@ -19,11 +23,6 @@ if plot_figure:
   save_figure = 0
 
 # Paths
-base_path = '/projects/topology_2010/'
-in_table_path = base_path + 'output/tables/ROIxTR_binary/'
-in_table_path_end = 'ROIvsTR_binary.csv'
-out_file_path = base_path + 'output/tables/ROIxTR_binary_nconcurrences/'
-out_file_path_end = '_nconcurrences.txt'
 first_column = 0 # 0-based
 
 if __name__ == '__main__':
@@ -32,11 +31,11 @@ if __name__ == '__main__':
     where each row is a voxel and columns are fMRI TRs.
     """
     # Iterate over subjects
-    for table_file in glob(in_table_path + '*' + in_table_path_end):
+    for table_file in glob(binary_table_path + '*' + binary_table_end):
       table_id = table_file.split('/')[-1].split('.')[0]
       print('Table: ' + table_file)
 
-      out_file = out_file_path + table_id + out_file_path_end
+      out_file = binary_table_path2 + table_id + binary_table_end2
       if os.path.exists(out_file):
         pass
       else:

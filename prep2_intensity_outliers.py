@@ -1,3 +1,9 @@
+#!/usr/bin/python
+"""
+Remove intensity outliers identified by rapidart (called by nipype in prep1_nipype.py)
+
+(c) Arno Klein  .  arno@binarybottle.com  .  2010
+"""
 
 import os
 import subprocess
@@ -7,13 +13,13 @@ import numpy as np
 
 volume_by_zero = 1
 
-adhd = 1
+patient = 1
 
 # Specify the location of the rapidart artifact statistics
-if adhd:
-  stats_path = '/Users/arno/Documents/Projects/topology_2010/preproc/output/adhd/'
+if patient:
+  stats_path = './preproc/output/patients/'
 else: 
-  stats_path = '/Users/arno/Documents/Projects/topology_2010/preproc/output/controls/'
+  stats_path = './preproc/output/controls/'
 stats_path_end = '/art/art.rest_preprocessed.nii_outliers.txt' 
 
 # Specify the location of the graymatter-masked, motion-corrected data
@@ -21,8 +27,8 @@ data_path = stats_path
 data_path_end = '/functional/rest_preprocessed_gray.nii.gz'
 
 # Specify the location of the original data
-#if adhd:
-#  data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD/'
+#if patient:
+#  data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_patient/'
 #else:
 #  data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_part1/'
 #data_path_end = '/func/rest.nii.gz'

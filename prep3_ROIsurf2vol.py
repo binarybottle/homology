@@ -1,10 +1,16 @@
+"""
+Use FreeSurfer utilities to propagate surface labels through cortical gray matter.
+
+(c) Arno Klein  .  arno@binarybottle.com  .  2010
+"""
 
 import os, sys, glob
+from settings.py import *
 
-fs_output_dir = "/mind_cart/tito_fs/fs_output/"
-ref_path1 = "/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD/"
-ref_path2 = "/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_part1/"
-out_path = "/hd2/data/Brains/FunctionalConnectomes1000/NewYork_freesurfer_labels/"
+fs_output_dir = "./output/freesurfer/"
+ref_path1 = data_path + "NewYork_a_ADHD/"
+ref_path2 = data_path + "NewYork_a_part1/"
+ref_end = '/anat/mprage_anonymized.nii.gz'
 
 cmd = 'SUBJECTS_DIR=' + fs_output_dir
 print(cmd); os.system(cmd)
@@ -17,11 +23,11 @@ for subject_path in glob.glob(fs_output_dir + "*"):
   test_file = subject_path + '/label/rh.cortex.label'
 
   if os.path.exists(test_file):
-    ref_file = ref_path1 + subject + '/anat/mprage_anonymized.nii.gz'
+    ref_file = ref_path1 + subject + ref_end
     if os.path.exists(ref_file):
       pass
     else:
-      ref_file = ref_path2 + subject + '/anat/mprage_anonymized.nii.gz'
+      ref_file = ref_path2 + subject + ref_end
     if os.path.exists(ref_file):
       out_file2 = out_path + subject + '_labels.nii.gz'
       if os.path.exists(out_file2):

@@ -1,11 +1,16 @@
-# emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
-# vi: set ft=python sts=4 ts=4 sw=4 et:
 """
-Prep for persistent homology project.
+First preparation step for the brain activity homology project.
 
-Preprocess ADHD and controls 
-(NYU data on NITRC's Functional Connectome 1000)
-for persistent homology project.
+NOTE:  See "Experiment-specific components" below. 
+This script preprocesses patient and control subjects
+(NYU data on NITRC's Functional Connectome 1000).
+
+Input: patient and control data directory paths
+
+The steps are motion correction, rapidart artifact detection, 
+and coregistration and gray matter masking of fMRI data.
+
+(c) Arno Klein and Satrajit S. Ghosh  .  arno@binarybottle.com  .  2010
 """
 
 """
@@ -21,6 +26,12 @@ import nipype.interfaces.utility as util     # utility
 import nipype.pipeline.engine as pe          # pypeline engine
 import nipype.algorithms.rapidart as ra      # artifact detection
 
+from settings import data_path
+
+# Specify the subject directories
+patient_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_path,'NewYork_a_ADHD/sub*'))]
+control_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_path,'NewYork_a_part1/sub*'))]
+subject_list = patient_subject_list + control_subject_list
 
 #####################################################################
 # Preliminaries
@@ -88,7 +99,7 @@ def getmiddlevolume(func):
 Realign the functional runs to the middle volume of the first run.
 """
 motion_correct = pe.Node(interface=fsl.MCFLIRT(save_mats = True,
-                                                  save_plots = True),
+                                               save_plots = True),
                          name='realign')
 
 """
@@ -191,14 +202,6 @@ Experiment-specific components
 ------------------------------
 
 """
-
-# Specify the location of the data.
-data_dir = '/hd2/data/Brains/FunctionalConnectomes1000/'
-# Specify the subject directories
-adhd_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_dir,'NewYork_a_ADHD/sub*'))]
-control_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_dir,'NewYork_a_part1/sub*'))]
-subject_list = adhd_subject_list + control_subject_list
-#subject_list = [subject_list[0]]
 # Map field names to individual subject runs.
 info = dict(func=[['subject_id', 'func', 'rest']],
             struct=[['subject_id', 'anat', 'mprage_anonymized']])
@@ -228,7 +231,7 @@ functionality.
 datasource = pe.Node(interface=nio.DataGrabber(infields=['subject_id'],
                                                outfields=['func', 'struct']),
                      name = 'datasource')
-datasource.inputs.base_directory = data_dir
+datasource.inputs.base_directory = data_path
 datasource.inputs.template = 'NewYork_a_*/%s/%s/%s.nii.gz'
 datasource.inputs.template_args = info
 
@@ -250,8 +253,8 @@ l1pipeline.connect([(infosource, datasource, [('subject_id', 'subject_id')]),
 
 datasink = pe.Node(interface=nio.DataSink(parameterization=False), name="datasink")
 def getbasedir(subject_id):
-    if subject_id in adhd_subject_list:
-        base_dir = os.path.abspath('./preproc/output/adhd')
+    if subject_id in patient_subject_list:
+        base_dir = os.path.abspath('./preproc/output/patients')
     else:
         base_dir = os.path.abspath('./preproc/output/controls')
     return base_dir

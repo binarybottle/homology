@@ -1,0 +1,15 @@
+#!/usr/bin/python
+
+data_path = '/hd2/data/Brains/FunctionalConnectomes1000/'
+label_list = '/projects/topology_2010/region_nums_names.txt'
+label_path = data_path + 'NewYork_freesurfer_labels/'
+label_path_end = '_labels.nii.gz'
+labelfunc_path_end = '_labels_funcspace.nii.gz'
+func_path = '/projects/topology_2010/preproc/workingdir/level1/preproc/_subject_id_'
+func_path_end = '/realign/rest_dtype_mcf.nii.gz'
+table_path = '/projects/topology_2010/output/tables/ROIxTR/'
+table_end = '_ROIvsTR.csv'
+binary_table_path = './output/tables/ROIxTR_binary/'
+binary_table_path2 = './output/tables/ROIxTR_binary_nconcurrences/'
+binary_table_end = 'ROIvsTR_binary.csv'
+binary_table_end2 = '_nconcurrences.txt'

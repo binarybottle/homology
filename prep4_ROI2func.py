@@ -1,9 +1,12 @@
-#!/usr/bin/python
+"""
+Use FSL's flirt to register labeled cortex to activity data.
+
+(c) Arno Klein  .  arno@binarybottle.com  .  2010
+"""
+
 import os,sys,warnings,glob
 
-label_path = "/hd2/data/Brains/FunctionalConnectomes1000/NewYork_freesurfer_labels/"
-label_path_end = '_labels.nii.gz'
-func_path = '/projects/topology_2010/preproc/workingdir/level1/preproc/_subject_id_'
+func_path = './preproc/workingdir/level1/preproc/_subject_id_'
 func_path_end = '/realign/rest_dtype_mcf.nii.gz'
 xfm_path = func_path
 xfm_path_end = "/coregister/mprage_anonymized_brain_flirt.mat"

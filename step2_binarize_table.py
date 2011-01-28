@@ -1,7 +1,9 @@
 """
-Remove rows with variation less than a minimum range of variation.
+NOTE:  FIX!  DON'T REMOVE ROWS!
+Remove rows of a table file with variation less than a minimum range of variation.
 Binarize the remaining rows according to a threshold.
 
+(c) Arno Klein  .  arno@binarybottle.com  .  2010
 """
 
 import sys, os
@@ -11,13 +13,11 @@ import numpy as np
 import pylab as plt
 from percentile import percentile
 
+from settings import binary_table_path, table_path, table_end
+
 # Paths
-base_path = '/projects/topology_2010/'
-out_image_path = base_path + 'output/images/'
-in_table_path = base_path + 'output/tables/ROIxTR/'
-in_table_path_end = 'ROIvsTR.csv'
+out_image_path = './output/images/'
 first_column = 1 # 0-based
-out_table_path = base_path + 'output/tables/ROIxTR_binary/'
 
 min_percentile = 0  # Set to 0 if retain all rows (regions); else, e.g. 0.25
 thresh_nstds = 2  # Set >0 to threshold table by thresh_nstds SDs above a row's mean
@@ -27,43 +27,18 @@ if plot_figure:
   colorbar = 1
   save_figure = 0
 
-"""
-# http://stackoverflow.com/questions/1159524/how-to-replace-a-column-in-a-csv-file-in-python
-def transpose(matrix):
-    return [[matrix[x][y] for x in range(len(matrix))] for y in range(len(matrix[0]))]
-
-# from mstats.py, after idealfourths
-def interquartile_range(data): 
-  \"""Returns an estimate of the interquartile range of the data, 
-     as computed with the ideal fourths.
-  \"""
-  data = np.ma.masked_array(data, copy=False)
-  x = np.sort(data.compressed())
-  n = len(x)
-  (j, h) = divmod(n / 4. + 5 / 12., 1)
-  qlo = (1 - h) * x[j] + h * x[j + 1]
-  k = n - j
-  qup = (1 - h) * x[k] + h * x[k - 1]
-  return qup - qlo
-  
-def variation_range(data, axis_arg=None):  
-  #return interquartile_range(data)
-  #return np.std(data)/np.mean(data)
-  return np.std(data, axis=axis_arg)
-"""
-
 if __name__ == '__main__':
     """
     This program outputs 1 csv file per subject, 
     where each row is a voxel and columns are fMRI TRs.
     """
     # Iterate over subjects
-    for table_file in glob(in_table_path + '*' + in_table_path_end):
+    for table_file in glob(table_path + '*' + table_end):
       table_id = table_file.split('/')[-1].split('.')[0]
       print('Table: ' + table_file)
 
-      out_file1 = out_table_path + table_id + '_variable.csv'
-      out_file2 = out_table_path + table_id + '_binary.csv'
+      out_file1 = binary_table_path + table_id + '_variable.csv'
+      out_file2 = binary_table_path + table_id + '_binary.csv'
       if os.path.exists(out_file1) or os.path.exists(out_file2):
         pass
       else:
