@@ -1,0 +1,24 @@
+#!/bin/sh
+#$ -wd /tmp
+
+echo "#### freesurfer running via SGE on" `hostname` "####"
+
+FREESURFER_HOME="/mind_cart/sw_install/mac/i386/10.5/freesurfer/4.5.0/"
+export FREESURFER_HOME
+export PATH="$PATH:$FREESURFER_HOME/bin:$FREESURFER_HOME/mni/bin:$FREESURFER_HOME/fsfast/bin"
+sh $FREESURFER_HOME/SetUpFreeSurfer.sh
+
+PERLLIB="$PERLLIB:$FREESURFER_HOME/mni/System/Library/Perl/5.8.6"
+export PERLLIB
+
+SUBJECTS_DIR=/tmp/
+export SUBJECTS_DIR
+
+INPUT_DIR=/mind_cart/tito_fs/anatomicals
+FILENAME=$1
+
+. ~/.bashrc
+recon-all -autorecon-all -cw256 -subjid $FILENAME -i ${INPUT_DIR}/${FILENAME}.nii.gz
+echo "#### freesurfer completed, copying files ####"
+cp -r ${SUBJECTS_DIR}/${FILENAME} /mind_cart/tito_fs/fs_output/
+echo "#### done ####"
