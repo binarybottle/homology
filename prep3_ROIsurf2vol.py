@@ -5,7 +5,8 @@ Use FreeSurfer utilities to propagate surface labels through cortical gray matte
 """
 
 import os, sys, glob
-from settings.py import *
+
+from settings.py import data_path
 
 fs_output_dir = "./output/freesurfer/"
 ref_path1 = data_path + "NewYork_a_ADHD/"

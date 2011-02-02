@@ -15,7 +15,7 @@ from optparse import OptionParser
 from pylab import find
 import csv
 
-from settings import label_path, labelfunc_path_end, func_path, func_path_end, table_path, table_end
+from settings import label_list, label_path, labelfunc_path_end, func_path, func_path_end, table_path, table_end
 
 if __name__ == '__main__':
     table_reader = csv.reader(open(label_list,'r'), delimiter=' ', quotechar='"')
@@ -42,14 +42,11 @@ if __name__ == '__main__':
                 # Iterate over ROIs
                 labels = load(label_file).get_data()
                 vols = load(func_file).get_data()
-                ##label_ids = np.unique(labels.ravel())
-                ##data = np.zeros((len(label_ids),len(vols)))
                 for label_id in label_ids:
                     if label_id > 0:
                         print("Subject " + subject_id + ", label " + str(label_id) + "/" + str(len(label_ids)))
                         label = np.zeros(np.shape(labels))
                         label[labels==label_id] = 1
-                        #label_voxels = np.nonzero(label)
 
                         # Iterate over TRs (volumes)
                         f.writelines(str(label_id)+",")
@@ -57,9 +54,7 @@ if __name__ == '__main__':
                             vol = vols[:,:,:,vol_id]
                             # get the mean intensity in the ROI for the TR (volume)
                             mean_value = np.mean(np.take(vol,np.nonzero(np.ravel(vol*label))))
-                            #data[label_id,vol_id] = mean_value
                             f.writelines(str(mean_value)+",")
                             print("  Volume " + str(vol_id) + ", mean value " + str(mean_value))
                         f.writelines("\n")
             f.close()
-            #np.save(table_path + subject_id + "_data.npy",data)

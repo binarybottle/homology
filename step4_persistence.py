@@ -1,5 +1,6 @@
 """
-Compute persistence and create a persistence diagram.
+Compute persistence and create a persistence diagram
+from a binary table of activity data.
 
 Much of this code was supplied by Dimitriy Morozov
 
@@ -8,156 +9,183 @@ Much of this code was supplied by Dimitriy Morozov
 
 import sys, os
 import csv
-from glob import glob
 import numpy as np
 import pylab as plt
 from itertools import combinations
+import time
+from glob import glob
 
-from settings import table_path
+from dionysus import Simplex, Filtration, StaticPersistence, dim_data_cmp, closure
+#from dionysus import DynamicPersistenceChains, data_dim_cmp
+
+from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2
 
 out_path = './output/tables/'
 
 plot_persistence_diagrams = 0
-run_dionysus = 1
-if run_dionysus:
-  from dionysus import Simplex, DynamicPersistenceChains, Filtration, data_dim_cmp
-  import time
 kskeleton = 3  # A k-simplex has k+1 vertices
-table_path = base_path + 'output/tables/ROIxTR_binary/'
-table_path_end = '_ROIvsTR_binary.csv'
-in_file_path = base_path + 'output/tables/ROIxTR_binary_nconcurrences/'
-in_file_path_end = '_nconcurrences.txt'
-out_path_end1 = '_persistence' + str(kskeleton) + '_diagram_Freq.csv'
-out_path_end2 = '_persistence' + str(kskeleton) + '_data_Freq.csv'
 first_column = 0 # 0-based
 reverse_filtration_order = 1
 set_filtration1_to_0 = 1
+dynamic_persistence = 1
 
-#Calculates the Binomial Coefficient
+# Calculate the binomial coefficient
 from math import factorial
 def Binomial(n,k):
     if n > k:
         b = factorial(n) / (factorial(k)*factorial(n-k))
         return b
 
+
 if __name__ == '__main__':
-  """
-  This program outputs 1 csv file per subject, 
-  where each row is a voxel and columns are fMRI TRs.
-  """
+    
   # Iterate over subjects
-  for table_file in glob(table_path + '*' + table_path_end):
+  for table_file in glob(binary_table_path + '*' + binary_table_end):
     table_id = table_file.split('/')[-1].split('.')[0]
-    print('Table: ' + table_file)
+    print('Load binary activity table: ' + table_file)
     if 1==1:
     #if os.path.exists(out_file):
     #  pass
     #else:
 
-      #################
-      # Prepare table #
-      #################
-      # Import table: 
+      # Import table 
       table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
         
-      # Extract all non-empty rows for columns greater than first_column:
+      # Extract all non-empty columns after the first_column
       table = []
-      for irow, row0 in enumerate(table_reader):
-        table.append([np.float(s2) for s2 in row0 if s2!=''][first_column:-1])
+      for irow, row in enumerate(table_reader):
+        table.append([np.float(s) for s in row if s!=''][first_column:-1])
+      print(' ' + str(len(table)) + ' regions, ' + \
+            str(len(table[0])) + ' times')
 
-      # Count:
-      nrows = len(table)
-      ncols = len(table[0])
-      print('k-skeleton = ' + str(kskeleton))
-      print('Number of columns = ' + str(ncols))
-      print('Number of rows = ' + str(nrows))
+      # Transpose table and create a new list of lists of indices 
+      # for each original table column
+      table_indices = []
+      for col in np.transpose(table).tolist():
+        icol = np.nonzero(col)
+        table_indices.append([s for s in icol[0]])
 
-      # Convert the table list to a table array:
-      table_array = np.array(np.zeros((nrows,ncols)))
-      for irow, row in enumerate(table):
-        table_array[irow] = table[irow]
-
-      # Import file: 
-      # Load frequency filtration numbers:        
-      num_file = in_file_path + table_id + in_file_path_end
-      print('File: ' + num_file)
+      # Load frequency filtration numbers        
+      num_file = binary_table_path2 + table_id + binary_table_end2
+      print('Load filtration file: ' + num_file)
       nconcurrences = np.loadtxt(num_file)
       if set_filtration1_to_0:
         nconcurrences = nconcurrences - 1
+        
       # Convert number of concurrences to filtration order (max is time 0):
-      # FIX!
       if reverse_filtration_order:
         max_nconcurrences = max(nconcurrences)
-        print('Maximum number of concurrences = ' + str(max_nconcurrences))
         nfiltrations = max_nconcurrences - nconcurrences
       else:
         nfiltrations = nconcurrences
         max_nconcurrences = max(nfiltrations)
-        print('Maximum number of concurrences = ' + str(max_nconcurrences))
-        
+      print(' Maximum number of concurrences = ' + str(max_nconcurrences))
+      print(time.asctime())
+      
       ###############
       # Persistence #
       ###############
-      if run_dionysus:
-        print('Dionysus software for persistence homology...')
-        if run_rips:
-          out_file = out_path + table_id + out_path_end
-          max_rips = len(table_array[0])*np.mean(table_array.ravel())
-          rips_pairwise_array.main(table, kskeleton, max_rips, out_file1, plot_persistence_diagrams)
-        else:
-          # Create simplices
-          print('Construct simplices...')
-          simplices = Filtration()
-          for icol in range(ncols):
-            inon0 = np.nonzero(table_array[:,icol]==1)[0]
-            if len(inon0) > 0:
-              simplex_column = Simplex([int(s) for s in inon0]) 
-              # Include all faces in each simplex
-              # Compute the k-skeleton of the closure of the list of simplices.
-              # A k-simplex has k+1 vertices.
-              for k in range(1, np.min([kskeleton+2,simplex_column.dimension()+1])):
-                for face in combinations(simplex_column.vertices, k):
-                  simplex_face = Simplex(face)
-                  """
-                  You can call a filtration with a simplex, 
-                  and it will tell you its index in the filtration.
-                  So if s is Simplex() and f a Filtration(), then
-                  f(s) returns the index of s in the filtration.
-                  """
-                  i = simplices(simplex_face)
-                  if i < len(simplices):
-                    existing_data = simplices[i].data
-                    simplices[i].data = min(existing_data, nfiltrations[icol])
-                  else:
-                    simplex_face.data = nfiltrations[icol]
-                    simplices.append(simplex_face)
+      print('--- Dionysus software for persistence homology ---')
+      
+      # Create simplices
+      print('Construct and sort simplices...')
+      levels = []
+      for itime, data_time in enumerate(table_indices):
+        levels.append(Simplex([int(s) for s in data_time], itime))
+      
+      # Sort the list by data
+      levels.sort(key = lambda s: s.data)
+      print(time.asctime())
+      
+      # Include all faces in each simplex
+      # Compute the k-skeleton of the closure of the list of simplices.
+      # A k-simplex has k+1 vertices.
+      print("Compute all " + str(kskeleton) + "-skeleton faces for each simplex...")
+      complex = closure(levels, kskeleton+1)
+      print(str(complex.__len__()) + ' faces computed') 
+      print(time.asctime())
 
-          nsimplices = simplices.__len__()
-          print('Number of faces computed: ' + str(nsimplices)) 
-          
-          # Sort simplicessimplices.__len__()
-          print('Sort simplices...')
-          simplices.sort(data_dim_cmp)
-          print(time.asctime())
-          print("Set up filtration")
-
-          p = DynamicPersistenceChains(simplices)
-          print(time.asctime())
-          print("Initialized DynamicPersistenceChains")
-            
+      print("Apply Filtration")      
+      f = Filtration(complex, dim_data_cmp)
+      #print("Complex in the filtration order:" + ', '.join((str(s) for s in f)))
+      print(time.asctime())
+      
+      if dynamic_persistence == 0:
+          """
+          ######################
+          # Static persistence #
+          ######################
+          StaticPersistence doesn't give you anything that 
+          DynamicPersistenceChains wouldn't, only speed and memory advantage. 
+          SP keeps track of strictly less information.
+          Dmitriy Morozov's explanation of Dionysus's Triangle example:
+            The output goes over all the simplices in the filtration order.
+            > True True
+            Sign of the simplex (True = positive, it creates a cycle; False =
+            negative, it destroys a cycle), the second is the sign of the simplex
+            paired with this simplex. By convention, an unpaired simplex is paired
+            with itself, so it's the only time you can see True True
+            A homology class is created after a simplex sigma enters a filtration
+            (a representative cycle necessarily contains sigma). It is destroyed
+            after tau enters a filtration, the chain that has that cycle as a
+            boundary necessarily contains tau. We say that sigma and tau are a
+            simplex pair.
+            > <0> (1) - <0> (1)
+            Simplex <0> is paired with itself, meaning that it's unpaired. The
+            cycle it creates never gets killed. (The numbers in parentheses are
+            redundant -- they are 1 if the simplex is positive, 0 if it's
+            negative; so same information as the previous line.)
+            > Cycle (0):
+            If a simplex kills a cycle, that cycle is output on this line.
+            > True False
+            > <1> (1) - <0, 1> 2.500000 (0)
+            > Cycle (0):
+            <1> is a positive simplex, paired with a negative simplex <0, 1>. So a
+            class that <1> created survived until <0, 1> appeared in the
+            filtration. Since <1> is positive, the cycle is empty.
+            That cycle field is non-empty only for negative simplices. It's
+            the cycle that's destroyed when the negative simplex (tau, above)
+            enters the filtration. A positive simplex entering the filtration does
+            not kill any cycles, so the cycle field is necessarily empty.> False True
+            > <0, 1> 2.500000 (0) - <1> (1)
+            > Cycle (2): <1> + <0>
+            <0, 1> is a negative simplex, paired with <1>. A representative cycle
+            that it destroyed is <1> + <0>.
+            > False True
+            > <1, 2> 2.900000 (0) - <2> (1)
+            > Cycle (2): <2> + <1>
+            <1, 2> is negative, paired with <2>. <2> + <1> is a representative
+            cycle that got killed.
+            > False True
+            > <0, 1, 2> (0) - <0, 2> 3.500000 (1)
+            > Cycle (1): <0, 2> 3.500000
+            <0, 1, 2> is a negative simplex, it killed a cycle created by <0,2>.
+            Note that the representative cycle lists only the positive simplices.
+            I.e. <0,2> by itself is not actually a cycle, but the cycle includes
+            some negative simplices (in this case <0,1> and <1,2>) that are not
+            listed in the output.
+          """
+          print("Initialize persistence...")
+          p = StaticPersistence(f)
+    
+          print("Pair simplices...")
           p.pair_simplices()
           print(time.asctime())
-          print("Simplices paired")
-            
-          print("Output persistence")
-          out_file1 = out_path + table_id + out_path_end1
-          out_file2 = out_path + table_id + out_path_end2
-          if plot_persistence_diagrams:
-            f1 = open(out_file1,"w")
-          f2 = open(out_file2,"w")
-          smap = p.make_simplex_map(simplices)
+          
+          smap = p.make_simplex_map(f)
+          for i in p:
+            print(i.sign(), i.pair().sign())
+            print("%s (%d) - %s (%d)" % (smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
+            print("Cycle (%d):" % len(i.cycle), " + ".join((str(smap[ii]) for ii in i.cycle)))
+    
+          print(" Number of unpaired simplices:", len([i for i in p if i.unpaired()]))
+          print(time.asctime())
 
+      else:
           """
+          ##############################
+          # Dynamic Persistence Chains #
+          ##############################
           Dimitriy Morozov: 
           Each row describes its own homology class, 
           but only at a certain time in the filtration. 
@@ -183,38 +211,49 @@ if __name__ == '__main__':
           negative simplices). It also stores what I call chains. 
           These allow you to get at the cycles that never die.
           """
+          print("Initialize DynamicPersistenceChains...")
+          p = DynamicPersistenceChains(f)
+                
+          print("Pair simplices...")
+          p.pair_simplices()
+          print(time.asctime())
+    
+          print("Output persistence...")
+          out_path_end1 = '_persistence' + str(kskeleton) + '_diagram_Freq.csv'
+          out_path_end2 = '_persistence' + str(kskeleton) + '_data_Freq.csv'
+          out_file1 = out_path + table_id + out_path_end1
+          out_file2 = out_path + table_id + out_path_end2
+          if plot_persistence_diagrams:
+            f1 = open(out_file1,"w")
+          f2 = open(out_file2,"w")
+          smap = p.make_simplex_map(complex)
+    
           for i in p:
-              if not i.sign():  continue
-              birth = smap[i]
-              if i.unpaired():
-                cycle = i.chain
-                death_value = "inf"
-              else:
-                cycle = i.pair().cycle
-                death_value = smap[i.pair()].data
-              #sys.exit()
-              #print(birth.data,death_value)
-              if birth.data > 0 and birth.data != death_value and birth.data != max_nconcurrences and death_value != max_nconcurrences:
-                smap_str = ''
-                for ii in cycle: 
-                  smap_str = smap_str + " " + str(smap[ii])
-                ddate = death_value
-                #if reverse_filtration_order:
-                #  bdate = max_nconcurrences - birth.data
-                #  if not i.unpaired():
-                #    ddate = max_nconcurrences - death_value
-                #else:
-                bdate = birth.data
-                s0 = [str(birth.dimension()),str(bdate),str(ddate)]
-                s1 = " ".join(s0)
-                s2 = " ".join([s1,smap_str])
-                #s3 = " ".join(["Dim, t0, t1, cycles:",s2])
-                #print(s3)
-                if plot_persistence_diagrams:
-                  f1.writelines(" ".join([s1,"\n"]))
-                f2.writelines(" ".join([s2,"\n"]))
+            if not i.sign():  continue
+            birth = smap[i]
+            if i.unpaired():
+              cycle = i.chain
+              death_value = "inf"
+            else:
+              cycle = i.pair().cycle
+              death_value = smap[i.pair()].data
+            if birth.data > 0 and birth.data != death_value and \
+               birth.data != max_nconcurrences and \
+               death_value != max_nconcurrences:
+              smap_str = ''
+              for ii in cycle: 
+                smap_str = smap_str + " " + str(smap[ii])
+              ddate = death_value
+              bdate = birth.data
+              s0 = [str(birth.dimension()),str(bdate),str(ddate)]
+              s1 = " ".join(s0)
+              s2 = " ".join([s1,smap_str])
+              if plot_persistence_diagrams:
+                f1.writelines(" ".join([s1,"\n"]))
+              f2.writelines(" ".join([s2,"\n"]))
           f2.close()
           if plot_persistence_diagrams:
-              f1.close()
-              cmd = 'python draw.py ' + out_file1
-              print(cmd); os.system(cmd)
+            f1.close()
+            cmd = 'python draw.py ' + out_file1
+            print(cmd); os.system(cmd)
+          print(time.asctime())

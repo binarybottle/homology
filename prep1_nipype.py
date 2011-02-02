@@ -26,12 +26,7 @@ import nipype.interfaces.utility as util     # utility
 import nipype.pipeline.engine as pe          # pypeline engine
 import nipype.algorithms.rapidart as ra      # artifact detection
 
-from settings import data_path
-
-# Specify the subject directories
-patient_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_path,'NewYork_a_ADHD/sub*'))]
-control_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_path,'NewYork_a_part1/sub*'))]
-subject_list = patient_subject_list + control_subject_list
+from settings import datasource_inputs, patient_subject_list, control_subject_list, subject_list
 
 #####################################################################
 # Preliminaries
@@ -232,7 +227,7 @@ datasource = pe.Node(interface=nio.DataGrabber(infields=['subject_id'],
                                                outfields=['func', 'struct']),
                      name = 'datasource')
 datasource.inputs.base_directory = data_path
-datasource.inputs.template = 'NewYork_a_*/%s/%s/%s.nii.gz'
+datasource.inputs.template = datasource_inputs
 datasource.inputs.template_args = info
 
 

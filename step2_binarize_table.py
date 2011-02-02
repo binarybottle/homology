@@ -55,11 +55,6 @@ if __name__ == '__main__':
         for irow, row0 in enumerate(table_reader):
           table.append([np.float(s2) for s2 in row0 if s2!=''][first_column:-1])
 
-        ##print(table)          
-        ##table = transpose(table)
-        ##plt.hist(np.ravel(table))
-        ##plt.hist(np.std(table,axis=1),bins=100)
-        
         # Count:
         print('Number of columns = ' + str(len(table[0])))
         print('Number of rows = ' + str(len(table)))
