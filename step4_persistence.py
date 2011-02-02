@@ -15,8 +15,8 @@ from itertools import combinations
 import time
 from glob import glob
 
-from dionysus import Simplex, Filtration, StaticPersistence, dim_data_cmp, closure
-#from dionysus import DynamicPersistenceChains, data_dim_cmp
+from dionysus import Simplex, data_dim_cmp, dim_data_cmp, closure,
+                     Filtration, StaticPersistence, DynamicPersistenceChains
 
 from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2
 
