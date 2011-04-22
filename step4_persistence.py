@@ -1,10 +1,9 @@
 """
-Compute persistence and create a persistence diagram
-from a binary table of activity data.
+Compute persistence from a binary table of activity data.
 
-Much of this code was supplied by Dimitriy Morozov
+Persistence code was developed by Dmitriy Morozov (Dionysus) and Vidit Nanda (nmfsimtop).
 
-(c) Arno Klein  .  arno@binarybottle.com  .  2010
+(c) Arno Klein  .  arno@binarybottle.com  .  2011
 """
 
 import sys, os
@@ -15,57 +14,49 @@ from itertools import combinations
 import time
 from glob import glob
 
-from dionysus import Simplex, data_dim_cmp, dim_data_cmp, closure,
-                     Filtration, StaticPersistence, DynamicPersistenceChains
+from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2, first_column, kskeleton, reverse_filtration_order, persistence_type, remove_dimension1, output_table_path
 
-from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2
+if persistence_type==1 or persistence_type==2:
+    from dionysus import Simplex, data_dim_cmp, dim_data_cmp, closure, Filtration, StaticPersistence, DynamicPersistenceChains
+    plot_persistence_diagrams = 0
 
-out_path = './output/tables/'
-
-plot_persistence_diagrams = 0
-kskeleton = 3  # A k-simplex has k+1 vertices
-first_column = 0 # 0-based
-reverse_filtration_order = 1
-set_filtration1_to_0 = 1
-dynamic_persistence = 1
-test = 1
-
-if test:
-    test_complex = [[64],[26,35],[54],[69],[2],[64],[16,35,82],[26,35],[54],[69],...
-               [2],[64],[16,35,82],[26,35],[54],[69],[33,81],[2],[64],...
-               [16,35,82],[26,35],[54],[69],[8,71],[33,81],[2]]
-
-# Calculate the binomial coefficient
-from math import factorial
-def Binomial(n,k):
-    if n > k:
-        b = factorial(n) / (factorial(k)*factorial(n-k))
-        return b
+test = 0
 
 
 if __name__ == '__main__':
   
   # Iterate over subjects
     if test:
-        table_files = ['dummy']
+        table_files = ['test_complex']
+        test_complex = [[64],[26,35],[54],[69],[2],[64],[16,35,82],[26,35],[54],[69],  
+                        [2],[64],[16,35,82],[26,35],[54],[69],[33,81],[2],[64],  
+                        [16,35,82],[26,35],[54],[69],[8,71],[33,81],[2]]
+        test_nconcurrences = np.array([4,4,4,4,4,4,3,4,4,4,  
+                        4,4,3,4,4,4,2,4,4,  
+                        3,4,4,4,1,2,4])-1
     else:
         table_files = glob(binary_table_path + '*' + binary_table_end)
+
     for table_file in table_files:
         table_id = table_file.split('/')[-1].split('.')[0]
         print('Load binary activity table: ' + table_file)
         if test:
             table_indices = test_complex
+            nconcurrences = test_nconcurrences
+            print('test_complex:')
+            print(table_indices)
+            print('test_nconcurrences:')
+            print(nconcurrences)
         else:
             # Import table 
             table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
-
             # Extract all non-empty columns after the first_column
             table = []
             for irow, row in enumerate(table_reader):
-                table.append([np.float(s) for s in row if s!=''][first_column:-1])
+                if irow < 10:
+                    table.append([np.float(s) for s in row if s!=''][first_column:-1])
             print(' ' + str(len(table)) + ' regions, ' + \
-                  str(len(table[0])) + ' times')
-
+                        str(len(table[0])) + ' times')
             # Transpose table and create a new list of lists of indices 
             # for each original table column
             table_indices = []
@@ -73,12 +64,14 @@ if __name__ == '__main__':
                 icol = np.nonzero(col)
                 table_indices.append([s for s in icol[0]])
 
-        # Load frequency filtration numbers        
-        num_file = binary_table_path2 + table_id + binary_table_end2
-        print('Load filtration file: ' + num_file)
-        nconcurrences = np.loadtxt(num_file)
-        if set_filtration1_to_0:
-            nconcurrences = nconcurrences - 1
+            # Load frequency filtration numbers        
+            num_file = binary_table_path2 + table_id + binary_table_end2
+            print('Load filtration file: ' + num_file)
+            nconcurrences = np.loadtxt(num_file)
+
+        if remove_dimension1:
+            nconcurrences = [s-1 if s>0 else 0 for s in nconcurrences]
+            #print(nconcurrences)
 
         # Convert number of concurrences to filtration order (max is time 0):
         if reverse_filtration_order:
@@ -87,38 +80,49 @@ if __name__ == '__main__':
         else:
             nfiltrations = nconcurrences
             max_nconcurrences = max(nfiltrations)
-        print(' Maximum number of concurrences = ' + str(max_nconcurrences))
+        print('Filtrations = ' + str(nfiltrations))
+        print('Maximum number of concurrences = ' + str(max_nconcurrences))
         print(time.asctime())
-        
+
+
         ###############
         # Persistence #
         ###############
-        print('--- Dionysus software for persistence homology ---')
-        
-        # Create simplices
-        print('Construct and sort simplices...')
-        levels = []
-        for itime, data_time in enumerate(table_indices):
-            levels.append(Simplex([int(s) for s in data_time], itime))
-        
-        # Sort the list by data
-        levels.sort(key = lambda s: s.data)
-        print(time.asctime())
-        
-        # Include all faces in each simplex
-        # Compute the k-skeleton of the closure of the list of simplices.
-        # A k-simplex has k+1 vertices.
-        print("Compute all " + str(kskeleton) + "-skeleton faces for each simplex...")
-        complex = closure(levels, kskeleton+1)
-        print(str(complex.__len__()) + ' faces computed') 
-        print(time.asctime())
-        
-        print("Apply Filtration")      
-        f = Filtration(complex, dim_data_cmp)
-        #print("Complex in the filtration order:" + ', '.join((str(s) for s in f)))
-        print(time.asctime())
-        
-        if dynamic_persistence == 0:
+        if persistence_type==1 or persistence_type==2:
+            print('--- Dionysus software for persistence homology ---')
+
+            # Create simplices
+            print('Construct and sort simplices...')
+            levels = []
+            for itime, data_time in enumerate(table_indices):
+                if remove_dimension1:
+                    if reverse_filtration_order:
+                        if nconcurrences[itime] < max_nconcurrences:
+                            levels.append(Simplex([int(s) for s in data_time], nconcurrences[itime]))
+                    else:
+                        if nconcurrences[itime] > 0:
+                            levels.append(Simplex([int(s) for s in data_time], nconcurrences[itime]))
+                else:
+                    levels.append(Simplex([int(s) for s in data_time], nconcurrences[itime]))
+
+            # Sort the list by data
+            levels.sort(key = lambda s: s.data)
+            print(time.asctime())
+
+            # Include all faces in each simplex
+            # Compute the k-skeleton of the closure of the list of simplices.
+            # A k-simplex has k+1 vertices.
+            print("Compute all " + str(kskeleton) + "-skeleton faces for each simplex...")
+            complex = closure(levels, kskeleton+1)
+            print(str(complex.__len__()) + ' faces computed') 
+            print(time.asctime())
+
+            print("Apply Filtration")      
+            f = Filtration(complex, dim_data_cmp)
+            #print("Complex in the filtration order:" + ', '.join((str(s) for s in f)))
+            print(time.asctime())
+
+        if persistence_type==1:
             """
             ######################
             # Static persistence #
@@ -175,21 +179,21 @@ if __name__ == '__main__':
             """
             print("Initialize persistence...")
             p = StaticPersistence(f)
-        
+
             print("Pair simplices...")
             p.pair_simplices()
             print(time.asctime())
-            
+
             smap = p.make_simplex_map(f)
             for i in p:
-                print(i.sign(), i.pair().sign())
-                print("%s (%d) - %s (%d)" % (smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
-                print("Cycle (%d):" % len(i.cycle), " + ".join((str(smap[ii]) for ii in i.cycle)))
-        
-            print(" Number of unpaired simplices:", len([i for i in p if i.unpaired()]))
+                print("dim %d: %s (%d) - %s (%d)" % (smap[i].dimension(), smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
+                #print(i.sign(), i.pair().sign())
+                #print("%s (%d) - %s (%d)" % (smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
+                #print("Cycle (%d):" % len(i.cycle), " + ".join((str(smap[ii]) for ii in i.cycle)))
+            print("Number of unpaired simplices: %d" % (len([i for i in p if i.unpaired()])))
             print(time.asctime())
-        
-        else:
+
+        elif persistence_type==2:
             """
             ##############################
             # Dynamic Persistence Chains #
@@ -225,18 +229,20 @@ if __name__ == '__main__':
             print("Pair simplices...")
             p.pair_simplices()
             print(time.asctime())
-        
+
             print("Output persistence...")
             out_path_end1 = '_persistence' + str(kskeleton) + '_diagram_Freq.csv'
             out_path_end2 = '_persistence' + str(kskeleton) + '_data_Freq.csv'
-            out_file1 = out_path + table_id + out_path_end1
-            out_file2 = out_path + table_id + out_path_end2
-            if plot_persistence_diagrams:
-                f1 = open(out_file1,"w")
-            f2 = open(out_file2,"w")
-            smap = p.make_simplex_map(complex)
-        
+            out_file1 = output_table_path + table_id + out_path_end1
+            out_file2 = output_table_path + table_id + out_path_end2
+            if not test:
+                if plot_persistence_diagrams:
+                    f1 = open(out_file1,"w")
+                f2 = open(out_file2,"w")
+
+            smap = p.make_simplex_map(f)
             for i in p:
+                #print("dim %d: %s (%d) - %s (%d)" % (smap[i].dimension(), smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
                 if not i.sign():  continue
                 birth = smap[i]
                 if i.unpaired():
@@ -245,6 +251,7 @@ if __name__ == '__main__':
                 else:
                     cycle = i.pair().cycle
                     death_value = smap[i.pair()].data
+                #print(birth.data, death_value, max_nconcurrences)
                 if birth.data > 0 and birth.data != death_value and \
                     birth.data != max_nconcurrences and \
                     death_value != max_nconcurrences:
@@ -256,12 +263,104 @@ if __name__ == '__main__':
                     s0 = [str(birth.dimension()),str(bdate),str(ddate)]
                     s1 = " ".join(s0)
                     s2 = " ".join([s1,smap_str])
-                    if plot_persistence_diagrams:
-                        f1.writelines(" ".join([s1,"\n"]))
-                    f2.writelines(" ".join([s2,"\n"]))
-            f2.close()
-            if plot_persistence_diagrams:
-                f1.close()
-                cmd = 'python draw.py ' + out_file1
-                print(cmd); os.system(cmd)
+                    print(" ".join([s2,"\n"]))
+                    if not test:
+                        if plot_persistence_diagrams:
+                            f1.writelines(" ".join([s1,"\n"]))
+                        f2.writelines(" ".join([s2,"\n"]))
+            if not test:
+                f2.close()
+                if plot_persistence_diagrams:
+                    f1.close()
+                    cmd = 'python draw.py ' + out_file1
+                    print(cmd); os.system(cmd)
             print(time.asctime())
+            
+        elif persistence_type==3:
+            """
+            This program calls code developed by Vidit Nanda:
+            ./<executable name> nmfsimtop <input filename> <output string>
+
+            "Here nmfsimtop stands for "Non-ManiFold SIMplicial TOPlex", which is
+            the kind of cell complex that you are creating here.
+            <input filename> should point to a simple text file which contains
+            numbers in the following format (without angle brackets or any
+            punctuation whatsoever save spaces and newlines):
+            -------------------------------------------------------------------------
+            <n>
+            <d1> <x1 x2... xn> <y1 y2 ... yn> ... <z1 z2 ... zn> <b1>
+            <d2> ...
+            :
+            :
+            --------------------------------------------------------------------------
+            Here n is the dimension of the ambient space whose points form the
+            vertices of your simplices. I believe that 90 has been the magic
+            number in the last data set. Each line following the <n> represents a
+            single simplex. The first number (like d1) indicates its dimension. We
+            now know that there are (d1 + 1) vertices for this simplex, each being
+            a point with n coordinates. So the next n(d1 + 1) numbers are
+            coordinates for the vertices of the simplex. The last number b1 is the
+            birth time of that simplex."
+            
+            EXAMPLE:
+            For our binary table input:
+
+                T1   T2   T3    T4
+            S1  X    X          X
+            S2  X    X
+            S3       X    X
+
+            Filtration works as follows:
+
+            T1: <1,2> appears twice
+            T2: <1,2,3> appears once
+            T3: <3> appears twice
+            T4: <1> appears three times
+
+            The dimensions and indices and birth numbers (our frequency levels) are:
+
+            1 1 2 2
+            2 1 2 3 1
+            0 3 2
+            0 1 3
+
+            Removing filtration level 1 (simplices that appear only one time):
+
+            1 1 2 2
+            0 3 2
+            0 1 3
+
+            Filtration is in reverse order as conventional persistence, 
+            so input to Vidit Nanda's program is therefore:
+
+            3
+            1 1 2 1
+            0 3 1
+            0 1 0
+            """
+            nmfsimtop_input_file = output_table_path + 'nmfsimtop_input/' + table_id + '_nmfsimtop_input.txt'
+            nmfsimtop_output_file = output_table_path + 'nmfsimtop_output/' + table_id + '_nmfsimtop.txt'
+            f3 = open(nmfsimtop_input_file,"w")
+            f3.close()
+            f3 = open(nmfsimtop_input_file,"a")
+            f3.write("1\n")
+
+            print('Running NMFSimTop...')
+            for itime, data_time in enumerate(table_indices):
+                write_string = " ".join([str(len(data_time)), " ".join([str(s) for s in data_time]), str(np.int(nconcurrences[itime])),"\n"])
+                f3.close()
+                f3 = open(nmfsimtop_input_file,"a")
+                if remove_dimension1:
+                    if reverse_filtration_order and nconcurrences[itime] < max_nconcurrences:
+                        f3.write(write_string)
+                    elif nconcurrences[itime] > 0:
+                        f3.write(write_string)
+                else:
+                    f3.write(write_string)
+
+            f3.close()
+            print(write_string)
+            cmd = './Pers_Beta/a.out nmfsimtop ' + nmfsimtop_input_file + ' ' + nmfsimtop_output_file
+            print(cmd)
+            os.system(cmd)
+            

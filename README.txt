@@ -1,12 +1,19 @@
 """
-Use FSL's flirt to register labeled cortex to activity data.
+Use FSL's mcflirt to register fMRI data to middle image of first run.
 
-(c) Arno Klein  .  arno@binarybottle.com  .  2010
+mcflirt -> to get realigned + mean time series
+bbregister -> mean to freesurfer
+vol2vol -> aseg.mgz : brainmask for rapidart
+vol2vol -> ribbon.mgz : gray ribbon for masking functionals
+rapidart -> to get outliers
+
+
+(c) Arno Klein  .  arno@binarybottle.com  .  2011
 """
 
 import os,sys,warnings,glob
 
-from settings import func_path, func_path_end, xfm_path, xfm_path_end, label_path, label_path_end, labelfunc_path_end
+from settings import func_path, func_path_end, xfm_path, xfm_path_end
 
 for subject_path in glob.glob(label_path + "*" + label_path_end):
 	subject_id = subject_path.split(label_path)[-1].split(label_path_end)[0]

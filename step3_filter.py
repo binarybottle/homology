@@ -3,8 +3,9 @@ Run frequency filtration on a binary table.
 
 Filter the table by the number of times (frequency) that the active regions 
 of a given column are repeated as a subset of the active regions of the other columns.
+The complex at frequency level f includes all concurrences that happen at least f times.
 
-(c) Arno Klein  .  arno@binarybottle.com  .  2010
+(c) Arno Klein  .  arno@binarybottle.com  .  2011
 """
 
 import sys, os
@@ -13,7 +14,7 @@ from glob import glob
 import numpy as np
 import pylab as plt
 
-from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2
+from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2, first_column
 
 filter_by_frequency = 1
 save_tables = 1
@@ -22,12 +23,9 @@ if plot_figure:
   colorbar = 1
   save_figure = 0
 
-# Paths
-first_column = 0 # 0-based
-
 if __name__ == '__main__':
     """
-    This program outputs 1 csv file per subject, 
+    This program outputs one csv file per subject, 
     where each row is a voxel and columns are fMRI TRs.
     """
     # Iterate over subjects
@@ -43,11 +41,11 @@ if __name__ == '__main__':
         #################
         # Prepare table #
         #################
-        # Import table: 
+        # Import table:
         table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
         #fh = open(table_file,'r'); table_reader = fh.readlines()
-        
-        # Extract all non-empty rows for columns greater than first_column:
+
+        # Extract all non-empty rows for columns to the right of the first_column:
         table = []
         for irow, row0 in enumerate(table_reader):
           table.append([np.float(s2) for s2 in row0 if s2!=''][first_column:-1])
@@ -62,12 +60,13 @@ if __name__ == '__main__':
         table_array_bin = np.array(np.zeros((nrows,ncols)))
         for irow, row in enumerate(table):
             table_array_bin[irow] = table[irow]
-                
+
         ########################
         # FREQUENCY FILTRATION #
         ########################
         # Filter the table by the number of times (frequency) that the active regions 
         # of a given column are repeated as a subset of the active regions of the other columns.
+        # The complex at frequency level f includes all concurrences that happen at least f times.
         if filter_by_frequency:
 
           nconcurrences = np.zeros(ncols)
@@ -82,7 +81,7 @@ if __name__ == '__main__':
                     nconcurrences[icol1] += 1
           max_nconcurrences = np.max(nconcurrences)
           print('Maximum number of concurrences = ' + str(max_nconcurrences))
-        
+
           """
           # Frequency filtration:
           print('Frequency filtration...')
@@ -106,4 +105,4 @@ if __name__ == '__main__':
             ax = fig.add_subplot(111, autoscale_on=False, xlim=(0,ncols), ylim=(0,nrows))
             ftable = frequency_tables[:,:,ifilter]
             p3 = ax.pcolor(ftable)
-      
+
