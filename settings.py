@@ -1,55 +1,28 @@
 """
- Settings for the entire topology processing pipeline
+Settings for the entire fMRI+topology processing pipeline
 
-(c) Arno Klein  .  arno@binarybottle.com  .  2011
-
-so take the mean functional after realignment, 
-and bbregister it to the freesurfer subject. 
-this will give you a registration matrix (.dat file). 
-then apply mri_vol2vol with the inverse option to convert 
-freesurfer volume labels to functional space with nearest neighbor interpolation. 
-
-mcflirt -> to get realigned + mean time series
-bbregister -> mean to freesurfer
-vol2vol -> aseg.mgz : brainmask for rapidart
-vol2vol -> ribbon.mgz : gray ribbon for masking functionals
-rapidart -> to get outliers
-
+(c) Arno Klein  .  arno@binarybottle.com  .  2011  .  MIT license
 """
-import os
-from glob import glob
 
-# prep0_coregister:
+from subprocess import call
+
+freesurfer_home = '/Applications/freesurfer'
+subjects_dir = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_freesurfer_subjects/fs_output'
+
+# prep1_maskfmri.py:
 data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
 fmri_path = '/func/rest'
 file_append = '.nii.gz'
-#xfm_path = func_path
-#xfm_path_end = "/coregister/mprage_anonymized_brain_flirt.mat"
-label_path = data_path + 'NewYork_freesurfer_labels/'
-label_path_end = '_labels.nii.gz'
-labelfunc_path_end = '_labels_funcspace.nii.gz'
+moco_command = 'mcflirt'
+reg_command = 'bbregister'
 
-# prep1_nipype (Nipype):
-datasource_inputs = 'NewYork_a_*/%s/%s/%s.nii.gz'
-patient_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_path,'NewYork_a_ADHD/sub*'))]
-control_subject_list = [path.split('/')[-1] for path in glob(os.path.join(data_path,'NewYork_a_part1/sub*'))]
-subject_list = patient_subject_list + control_subject_list
+# prep2_outliers.py:  data_path, fmri_path, file_append, moco_command
+stats_path = './preproc/output/'
+stats_path_end = '/art/art.rest_preprocessed.nii_outliers.txt' 
+remove_volumes = 0
 
-# prep2_intensity_outliers:
-preproc_func = '/functional/rest_preprocessed_gray.nii.gz'
-preproc_func_path_end = '/rest_preprocessed_gray_negativeIntensityOutliers.nii.gz'
-
-# prep3_ROIsurf2vol:
-# data_path
-
-# prep4_ROI2func:
-#?label_path = data_path + 'NewYork_freesurfer_labels/'
-#?label_path_end = '_labels.nii.gz'
-#?labelfunc_path_end = '_labels_funcspace.nii.gz'
-#?func_path = '/projects/homology/preproc/workingdir/level1/preproc/_subject_id_'
-#?func_path_end = '/realign/rest_dtype_mcf.nii.gz'
-#?xfm_path = func_path
-#?xfm_path_end = "/coregister/mprage_anonymized_brain_flirt.mat"
+# prep3_ROIsurf2vol:  data_path, moco_command
+anat_path = '/anat/mprage_anonymized'
 
 # step1_ROIxTR_table:
 # label_path, labelfunc_path_end, preproc_func_path, preproc_func_path_end
@@ -81,3 +54,12 @@ reverse_filtration_order = 1
 persistence_type = 3  # static_persistence = 1; dynamic_persistence = 2; nmfsimtop = 3
 remove_dimension1 = 1
 output_table_path = './output/tables/'
+
+
+
+args1 = 'FREESURFER_HOME=' + freesurfer_home
+args2 = 'SUBJECTS_DIR=' + subjects_dir
+args3 = 'export FREESURFER_HOME SUBJECTS_DIR'
+print(args1); call(args1, shell=True)
+print(args2); call(args2, shell=True)
+print(args3); call(args3, shell=True)
