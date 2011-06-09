@@ -16,7 +16,9 @@ robj.r('library(MASS)')
 #robj.r.assign('y', data)
 
 rdetrend = robj.r("""
-detrend <- function(y, preserve.stats = TRUE, I.want.it.all = FALSE, verbose = FALSE, upset = .1) {
+dtrend <- function(y, preserve.stats = TRUE, I.want.it.all = FALSE, verbose = FALSE, upset = .1) {
+# Requires "MASS".
+# Revised 4/'11, 5/'11.
 
 x <- 1:length(y)
 # Keep track of where the NA's are.
@@ -25,12 +27,15 @@ yy <- y[!z]
 xx <- x[!z]
 
 # If there's no spread in the data then detrending isn't needed.
+
 quyy <- IQR(yy)
 myy <- abs(median(yy))
+
 if( myy < 0.000001) myy <- 1
+
 if(quyy/myy  < 0.000001) {
-    cat("  No spread in data. No need to detrend.\n")
-    return(y)
+cat("  No spread in data. No need to detrend.       dtrend -- \n")
+return(y)
 }
 
 treg <- rlm(yy ~ xx)
@@ -40,34 +45,31 @@ quyr <- IQR(yr) # ('IQR' computes the interquartile range.)
 
 sreg <- NULL
 
-if(quyr < 0.00001) { syr <- 1 } else {
-    ayr <- log(abs(yr/quyr) + upset)
-    sreg <- rlm(ayr ~ xx)
-    if(sreg$converged) { 
-        syr <- exp(sreg$fitted.values)
-    } else {
-        cat("  'rlm' didn't converge.     dtrend -- \n")
-        syr <- median(abs(yr))
-    }
-}
+if(quyr < 0.00001) { syr <- 1 } else {  
 
+ayr <- log(abs(yr/quyr) + upset)
+sreg <- rlm(ayr ~ xx)
+
+if(sreg$converged) { syr <- exp(sreg$fitted.values) 
+                      } else { 
+		        cat("  'rlm' didn't converge.     -- dtrend \n")
+                        syr <- median(abs(yr)) 
+                             }
+                                       }
 if(verbose) {
-    cat("   'syr'                 -- dtrend\n")
-    print(syr)
+cat("   'syr'                 -- dtrend\n")
+print(syr)
 }
-
-ys <- yr/syr
+      ys <- yr/syr
 
 crrxn <- 1
-qys <- IQR(ys)
-if(preserve.stats) {
-    if(qys < 0.00001) {
-        cat("  NO SPREAD IN RESIDUALS. CAN'T PRESERVE STATISTICS!\n")
-    } else { 
-        crrxn <- quyy/qys 
-    }
-}
-
+qys <- IQR(ys) 
+if(preserve.stats) { 
+# Preserve the median of the original series, 'y', and the IQR of the residuals, 'yr'.
+if(qys < 0.00001) {
+  cat("  NO SPREAD IN RESIDUALS. CAN'T PRESERVE STATISTICS!     -- dtrend \n")
+				      } else { crrxn <- quyr/qys }
+				      	}
 ys <- ys * crrxn
 
 crrxn <- 0
@@ -79,9 +81,8 @@ ys <- ys + crrxn
 newy <- rep(NA, length(z))
 newy[xx] <- ys
 if(I.want.it.all) {
-    return(list(detrended.series = newy, location.reg = treg, scale.reg = sreg))
+return(list(detrended.series = newy, location.reg = treg, scale.reg = sreg))
 }
 newy
-
 }
 """)

@@ -3,17 +3,19 @@
 Preprocess functional data to extract activity in gray matter.
 
 1. Realign each functional run to its mean volume.
-2. Register the mean functional image to the corresponding FreeSurfer structural data.
-3. Inverse transform the FreeSurfer labels to the mean functional image.
-4. Mask each functional image in the time series with the brain mask.
+2. Correct for sampling offsets inherent in slice-wise EPI acquisition sequences.
+3. Register the mean functional image to the corresponding FreeSurfer structural data.
+4. Inverse transform the FreeSurfer labels to the mean functional image.
+5. Mask each functional image in the time series with the brain mask.
 
 Programs: FSL, FreeSurfer
 
 1. mcflirt:        get realigned + mean time series
-2. bbregister:     register mean to FreeSurfer
-3. mri_aparc2aseg: map cortical labels to the segmentation volume
+2. slicetimer:     slice-time correction (ascending, interleaved)
+3. bbregister:     register mean to FreeSurfer
+4. mri_aparc2aseg: map cortical labels to the segmentation volume
    mri_vol2vol:    transform labels to fmri data
-4. mri_mask:       mask functionals with the brain mask
+5. mri_mask:       mask functionals with the brain mask
 
 (c) Arno Klein  .  arno@binarybottle.com  .  2011  .  MIT license
 """
@@ -21,7 +23,8 @@ Programs: FSL, FreeSurfer
 motioncorrect_fmri = 1
 register_fmri2mri = 1
 transform_labels2fmri = 1
-mask_fmri = 1
+slicetimecorrect_fmri = 0
+mask_fmri = 0
 
 freesurfer_home = '/Applications/freesurfer'
 subjects_dir = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_freesurfer_subjects'
@@ -30,6 +33,7 @@ fmri_path = '/func/rest'
 anat_path = '/anat/mprage_anonymized'
 file_append = '.nii.gz'
 moco_command = 'mcflirt'
+slicetime_command = 'slicetimer'
 reg_command = 'bbregister'
 
 import os
@@ -89,14 +93,24 @@ if __name__ == '__main__':
             print(' '.join(args3)); call(' '.join(args3), shell=True)
 
         """
-        Mask each functional image in the time series with the brain mask.
+        Correct for sampling offsets inherent in slice-wise EPI acquisition sequences.
+        ... slicetimer -i <fmri file> -o <output file> --odd
+        """
+        slicetime_file = data_path + subject_id + fmri_path + '_' + moco_command + '_' + slicetime_command + file_append
+        if slicetimecorrect_fmri:
+            args = [slicetime_command, '-i', moco_file_stem+file_append, '-o', slicetime_file, '--odd']
+            print(' '.join(args)); call(' '.join(args), shell=True)
+
+        """
+        Mask each pre-processed functional image in the time series with the brain mask.
         ... mri_mask <fmri> <mask> <output>
         """
         labeled_fmri_mask_file = data_path + subject_id + fmri_path + '_aparc2aseg_mask' + file_append
         brain_fmri_file = data_path + subject_id + fmri_path + '_brain' + file_append
         if mask_fmri:
             args1 = ['fslmaths', labeled_fmri_file, '-bin', labeled_fmri_mask_file]
-            args2 = ['mri_mask', fmri_file, labeled_fmri_mask_file, brain_fmri_file]
+#            args2 = ['mri_mask', slicetime_file, labeled_fmri_mask_file, brain_fmri_file]
+            args2 = ['mri_mask', moco_file_stem+file_append, labeled_fmri_mask_file, brain_fmri_file]
             print(' '.join(args1)); call(' '.join(args1), shell=True)
             print(' '.join(args2)); call(' '.join(args2), shell=True)
 

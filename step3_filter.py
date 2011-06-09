@@ -1,108 +1,151 @@
+#!/usr/bin/python
 """
-Run frequency filtration on a binary table.
+1. Detrend activity for each region (table row).
+2. Denoise activity for each region by number of median absolute deviations from the median.
+3. Bandlimit the frequencies of activity for each region.
 
-Filter the table by the number of times (frequency) that the active regions 
-of a given column are repeated as a subset of the active regions of the other columns.
-The complex at frequency level f includes all concurrences that happen at least f times.
+Re: bandpass filtering:
+From: Susan Whitfield-Gabrieli <swg@mit.edu>
+Date: Thu, Mar 10, 2011 at 10:10 AM
+I'd recommend a band pass filter for resting scans with the low pass being < 0.1HZ.
+Often people something like (0.004 < f < 0.08 Hz). There are a couple of papers
+that discuss the influence of
+1. when best to apply the bpf wrt other preprocessing steps
+2. how the major action is in this range as opposed to higher freq (Salvadore)
+From: Gael Varoquaux <gael.varoquaux@normalesup.org>
+Date: Fri, Mar 11, 2011 at 6:15 AM
+I'd use a band pass filter, cut above 0.1 Hz, and below half the acquisition length.
 
-(c) Arno Klein  .  arno@binarybottle.com  .  2011
+(c) Arno Klein  .  arno@binarybottle.com  .  2011  .  MIT license
 """
 
-import sys, os
-import csv
-from glob import glob
+detrend = 1
+denoise = 1
+bandpass = 1
+
+data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
+table_path = '/projects/homology/output/tables/'
+table_end = '_activity.csv'
+table_end_filtered = '_filtered.csv'
+label_column = 0 # 0-based
+first_column = 1 # 0-based
+out_image_path = './output/images/'
+
+thresh_deviations = 5
+TR = 2
+freq_lower = 0.0
+freq_upper = 0.25
+
+import os
 import numpy as np
-import pylab as plt
+import csv
+import scipy
+import matplotlib.pyplot as plt
+from nitime.timeseries import TimeSeries
+from nitime.analysis import FilterAnalyzer
+import rpy2.robjects as robj
+from detrendR import rdetrend
+import warnings
+warnings.simplefilter('ignore')
 
-from settings import binary_table_path, binary_table_path2, binary_table_end, binary_table_end2, first_column
-
-filter_by_frequency = 1
-save_tables = 1
-plot_figure = 0
-if plot_figure:
-  colorbar = 1
-  save_figure = 0
+debug_run1 = 0
+debug_plot = 0
+save_figure = 0
 
 if __name__ == '__main__':
-    """
-    This program outputs one csv file per subject, 
-    where each row is a voxel and columns are fMRI TRs.
-    """
+
     # Iterate over subjects
-    for table_file in glob(binary_table_path + '*' + binary_table_end):
-      table_id = table_file.split('/')[-1].split('.')[0]
-      print('Table: ' + table_file)
+    for subject_id in os.listdir(data_path):
 
-      out_file = binary_table_path2 + table_id + binary_table_end2
-      if os.path.exists(out_file):
-        pass
-      else:
+        table_file = table_path + subject_id + table_end
+        out_filtered_file = table_path + subject_id + table_end_filtered
+        print('Input and output tables: ' + table_file + ', ' + out_filtered_file)
 
-        #################
-        # Prepare table #
-        #################
-        # Import table:
-        table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
-        #fh = open(table_file,'r'); table_reader = fh.readlines()
+        try:
 
-        # Extract all non-empty rows for columns to the right of the first_column:
-        table = []
-        for irow, row0 in enumerate(table_reader):
-          table.append([np.float(s2) for s2 in row0 if s2!=''][first_column:-1])
+            # Import table and extract all non-empty rows (not incl. first column):
+            table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
+            table = []
+            labels = []
+            for row in table_reader:
+                table.append([np.float(s) for s in row if s!=''][first_column::])
+                labels.append(np.int(np.float(row[label_column])))
 
-        # Count:
-        nrows = len(table)
-        ncols = len(table[0])
-        print('Number of columns = ' + str(ncols))
-        print('Number of rows = ' + str(nrows))
+            # Prepare output array:
+            nrows = len(table)
+            ncols = len(table[0])
+            filtered = np.array(np.zeros((nrows,ncols+1)))
 
-        # Convert the table list to a table array:
-        table_array_bin = np.array(np.zeros((nrows,ncols)))
-        for irow, row in enumerate(table):
-            table_array_bin[irow] = table[irow]
+            if debug_plot:
+                fig = plt.figure()
+                ax = fig.add_subplot(111)
 
-        ########################
-        # FREQUENCY FILTRATION #
-        ########################
-        # Filter the table by the number of times (frequency) that the active regions 
-        # of a given column are repeated as a subset of the active regions of the other columns.
-        # The complex at frequency level f includes all concurrences that happen at least f times.
-        if filter_by_frequency:
+            # Iterate over rows (regions):
+            for irow, row in enumerate(table):
 
-          nconcurrences = np.zeros(ncols)
-          for icol1 in range(ncols):
-            i1 = np.nonzero(table_array_bin[:,icol1]==1)[0]
-            if len(i1) > 0:
-              nconcurrences[icol1] += 1
-              for icol2 in range(ncols):
-                if icol2 != icol1:
-                  i2 = np.nonzero(table_array_bin[:,icol2]==1)[0]
-                  if len(np.intersect1d(i1,i2)) == len(i1):
-                    nconcurrences[icol1] += 1
-          max_nconcurrences = np.max(nconcurrences)
-          print('Maximum number of concurrences = ' + str(max_nconcurrences))
+                if debug_plot:
+                    row_original = row
 
-          """
-          # Frequency filtration:
-          print('Frequency filtration...')
-          frequency_table = table_array_bin * nconcurrences
-          frequency_tables = np.zeros((nrows,ncols,max_nconcurrences))
-          for ifilter in range(max_nconcurrences):
-            i,j = np.nonzero(frequency_table > ifilter)
-            frequency_tables[i,j,ifilter] = 1
-          """
+                """
+                Detrend the activity for each region.
+                """
+                if detrend:
+                   #row = scipy.signal.detrend(row, axis = 0, type = 'linear', bp = 0) # + 643
+                    row_detrend = np.array(rdetrend(robj.FloatVector(row)))
+                    row = row_detrend.copy()
 
-          # Save:
-          if save_tables:
-            np.savetxt(out_file, nconcurrences)
+                """
+                Denoise the activity for each region by number of median absolute deviations from the median.
+                """
+                if denoise:
+                    row_denoise = row
+                    median_abs_deviation = np.median(np.abs(row_denoise - np.median(row_denoise)))
+                    for ientry, entry in enumerate(row_denoise):
+                        if abs(entry - np.median(row_denoise)) > abs(thresh_deviations * median_abs_deviation):
+                            if ientry > 0 and ientry < ncols-1:
+                                row_denoise[ientry] = np.mean([row_denoise[ientry-1], row_denoise[ientry+1]])
+                            elif ientry == 0:
+                                row_denoise[ientry] = np.mean([row_denoise[1], row_denoise[2]])
+                            elif ientry == ncols-1:
+                                row_denoise[ientry] = np.mean([row_denoise[ncols-2], row_denoise[ncols-3]])
+                    row = row_denoise.copy()
 
-        ########
-        # Plot #
-        ########
-        if plot_figure:
-          for ifilter in range(max_nconcurrences):
-            fig = plt.figure(facecolor='white')
-            ax = fig.add_subplot(111, autoscale_on=False, xlim=(0,ncols), ylim=(0,nrows))
-            ftable = frequency_tables[:,:,ifilter]
-            p3 = ax.pcolor(ftable)
+                """
+                Bandpass the frequencies of activity for each region.
+                """
+                if bandpass:
+                    # Initialize a TimeSeries object:
+                    T = TimeSeries(row,sampling_interval=TR)
+                    row_bandpass = np.array(FilterAnalyzer(T,lb=freq_lower,ub=freq_upper).filtered_fourier)
+                    row = row_bandpass.copy()
 
+                if debug_plot:
+                    if detrend and denoise and bandpass:
+                        ax.plot(range(0,ncols,1),row_original,'k+--',
+                                range(0,ncols,1),row_detrend,'bo-',
+                                range(0,ncols,1),row_denoise,'go-',
+                                range(0,ncols,1),row_bandpass,'ro-')
+                    else:
+                        ax.plot(range(0,ncols,1),row_original,'k+--',range(0,ncols,1),row,'ko-')
+                    plt.xlabel('Time points',fontsize='16')
+                    plt.ylabel('Activity in region '+str(labels[irow])+' ('+str(freq_lower)+'-'+str(freq_upper)+'Hz)',fontsize='16')
+                    plt.title('Activity: average(-), detrend(b), denoise(g), bandpass(r) (subject '+subject_id+')',fontsize='18')
+                    # Save figure:
+                    if save_figure:
+                        fname = out_image_path + subject_id + '_filtered_activity.pdf'
+                        plt.savefig(fname, dpi=None, facecolor='w', edgecolor='w',
+                            orientation='landscape', papertype=None, format=None,
+                            transparent=False, bbox_inches=None, pad_inches=0.0)
+                    raise
+
+                label = np.array((np.float(labels[irow])))
+                filtered[irow] = np.hstack((label,row))
+
+            # Save the output to a text file:
+            np.savetxt(out_filtered_file, filtered, delimiter=",")
+
+        except IOError:
+            raise
+
+        if debug_run1:
+            raise NameError('STOPPED')

@@ -7,18 +7,19 @@ Persistence code was developed by Dmitriy Morozov (Dionysus) and Vidit Nanda (nm
 (c) Arno Klein  .  arno@binarybottle.com  .  2011  .  MIT license
 """
 
-kskeleton = 3  # A k-simplex has k+1 vertices (for Dionysus)
+kskeleton = 1  # A k-simplex has k+1 vertices
 reverse_filtration_order = 1
-persistence_type = 2  # static_persistence = 1; dynamic_persistence = 2; nmfsimtop = 3
-remove_dimension1 = 1
+persistence_type = 3  # static_persistence = 1; dynamic_persistence = 2; nmfsimtop = 3
+remove_dimension1 = 0
 
-data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
+data_path = '/hd2/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
 table_path = '/projects/homology/output/tables/'
 table_end = '_binary.csv'
-nconcurrences_file_end = '_nconcurrences.txt'
+nconcurrences_file_end = '_concurrences.txt'
 first_column = 1 # 0-based
 
 import sys, os
+from subprocess import call
 import csv
 import numpy as np
 import pylab as plt
@@ -45,7 +46,29 @@ if __name__ == '__main__':
                             [16,35,82],[26,35],[54],[69],[8,71],[33,81],[2]]
             test_nconcurrences = np.array([4,4,4,4,4,4,3,4,4,4,  
                             4,4,3,4,4,4,2,4,4,  
-                            3,4,4,4,1,2,4])-1
+                            3,4,4,4,1,2,4])
+            test_complex = [[1,2,3],[1,3,4],[1,2,3],[1,4],[1,2],[2,3],[1,3],[1,3],[1,2],[4]]
+            test_nconcurrences = np.array([1,2,2,3,2,3,3,3,3])
+
+            test_complex = [[1,2,3],[3,4],[1,2],[2,3],[1,3],[4],[3]]
+            test_nconcurrences = np.array([1,2,3,2,3,4,7])
+            test_complex = [[1,2,3],[3,4],[2,3],[1,3],[1,2],[4],[3]]
+            test_nconcurrences = np.array([3,2,2,1,1,1,1])
+
+            test_complex = [[1,2,3],[1,3,4],[1,2,3],[1,4],[3,4],[1,2],[2,3],[1,4],[3,4],[1,4],[3,4],[2]]
+            test_nconcurrences = np.array([2,1,2,4,4,3,3,4,4,4,4,5])
+
+            test_complex = [[1,2,3],[3,4],[3,4],[1,2],[2,3],[1,3],[1,3],[1,2],[4],[4],[3]]
+            test_nconcurrences = np.array([1,2,2,3,2,3,3,3,4,4,7])
+
+
+            test_complex = [[1,2,3],[1,3,4],[1,2,3],[1,4],[3,4],[1,2],[2,3],[1,4],[3,4],[1,4],[3,4],[2]]
+            test_nconcurrences = np.array([2,1,2,5,5,3,3,5,5,5,5,4])
+
+            test_complex = [[1,2,3],[1,3,4],[1,4],[3,4],[1,2],[2,3],[2]]
+            test_nconcurrences = np.array([2,1,5,5,3,3,4])
+
+
             table_indices = test_complex
             nconcurrences = test_nconcurrences
             print('test_complex:')
@@ -55,11 +78,18 @@ if __name__ == '__main__':
         else:
 
             """
+            Load frequency filtration numbers.
+            """
+            num_file = table_path + subject_id + nconcurrences_file_end
+            print('Load filtration file: ' + num_file)
+            nconcurrences_all = np.loadtxt(num_file)
+
+            """
             Import table and extract all non-empty rows (not incl. first column).
             """
             table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
             [nrows,ncols] = np.shape([s for s in table_reader])
-            ncols = ncols - 1
+            ncols = ncols - first_column
             print('Number of columns = ' + str(ncols))
             print('Number of rows = ' + str(nrows))
             table = np.zeros((nrows,ncols))
@@ -71,31 +101,22 @@ if __name__ == '__main__':
             Transpose table and create a new list of lists of indices for each original table column.
             """
             table_indices = []
-            for col in np.transpose(table).tolist():
-                icol = np.nonzero(col)
-                table_indices.append([s for s in icol[0]])
-
-            # Load frequency filtration numbers        
-            num_file = table_path + subject_id + nconcurrences_file_end
-            print('Load filtration file: ' + num_file)
-            nconcurrences = np.loadtxt(num_file)
-
-        if remove_dimension1:
-            print("Removing dimension 1...")
-            nconcurrences = [s-1 if s>0 else 0 for s in nconcurrences]
+            nconcurrences = []
+            for icol, col in enumerate(np.transpose(table)):
+                Icol = np.nonzero(col)
+                if len(Icol[0]) > 0:
+                    table_indices.append([s for s in Icol[0]])
+                    nconcurrences.append(nconcurrences_all[icol])
 
         """
         Convert number of concurrences to filtration order (max is time 0).
         """
-        if reverse_filtration_order:
-            print("Reversing filtration order...")
-            max_nconcurrences = max(nconcurrences)
-            nfiltrations = max_nconcurrences - nconcurrences
-        else:
-            nfiltrations = nconcurrences
-            max_nconcurrences = max(nfiltrations)
-        print('Filtrations = ' + str(nfiltrations))
+        max_nconcurrences = max(nconcurrences)
         print('Maximum number of concurrences = ' + str(max_nconcurrences))
+        print('Filtrations = ' + str(nconcurrences))
+        if reverse_filtration_order:
+            print('Reverse filtrations = ' + str(max_nconcurrences - nconcurrences + 1))
+            nconcurrences = max_nconcurrences - nconcurrences + 1
         print(time.asctime())
 
         """
@@ -115,7 +136,7 @@ if __name__ == '__main__':
                         if nconcurrences[itime] < max_nconcurrences:
                             levels.append(Simplex([int(s) for s in data_time], nconcurrences[itime]))
                     else:
-                        if nconcurrences[itime] > 0:
+                        if nconcurrences[itime] > 1:
                             levels.append(Simplex([int(s) for s in data_time], nconcurrences[itime]))
                 else:
                     levels.append(Simplex([int(s) for s in data_time], nconcurrences[itime]))
@@ -294,25 +315,24 @@ if __name__ == '__main__':
         elif persistence_type==3:
             """
             This program calls code developed by Vidit Nanda:
-            ./<executable name> nmfsimtop <input filename> <output string>
+            pers <input file name> nmfsimtop <output file string>
 
-            "Here nmfsimtop stands for "Non-ManiFold SIMplicial TOPlex", which is
+            "Non-ManiFold SIMplicial TOPlex" is
             the kind of cell complex that you are creating here.
             <input filename> should point to a simple text file which contains
             numbers in the following format (without angle brackets or any
             punctuation whatsoever save spaces and newlines):
-            -------------------------------------------------------------------------
-            <n>
-            <d1> <x1 x2... xn> <y1 y2 ... yn> ... <z1 z2 ... zn> <b1>
-            <d2> ...
-            :
-            :
-            --------------------------------------------------------------------------
+            -----------------------------------------------
+			<dimension of point-space, say n> <dimension cap, d>
+			<dim of simplex 1, say m> <coordinates of 1st vertex> ... <coordinates of m+1 vertex>
+			<dim of simplex 2,...> etc.
+			:
+			------------------------------------------------
+			Coordinates are separated by spaces.
             Here n is the dimension of the ambient space whose points form the
-            vertices of your simplices. I believe that 90 has been the magic
-            number in the last data set. Each line following the <n> represents a
-            single simplex. The first number (like d1) indicates its dimension. We
-            now know that there are (d1 + 1) vertices for this simplex, each being
+            vertices of your simplices. Each line following the <n> represents a
+            single simplex. The first number (d1) indicates its dimension. 
+            We now know that there are (d1 + 1) vertices for this simplex, each being
             a point with n coordinates. So the next n(d1 + 1) numbers are
             coordinates for the vertices of the simplex. The last number b1 is the
             birth time of that simplex."
@@ -348,36 +368,35 @@ if __name__ == '__main__':
             Filtration is in reverse order as conventional persistence, 
             so input to Vidit Nanda's program is therefore:
 
-            3
+            1 3
             1 1 2 1
             0 3 1
             0 1 0
             """
-            nmfsimtop_input_file = table_path + 'nmfsimtop_input/' + subject_id + '_nmfsimtop_input.txt'
-            nmfsimtop_output_file = table_path + 'nmfsimtop_output/' + subject_id + '_nmfsimtop.txt'
+            nmfsimtop_input_file = table_path + 'nmfsimtop/' + subject_id + '_nmfsimtop_input.txt'
+            nmfsimtop_output_string = table_path + 'nmfsimtop/' + subject_id + '_nmfsimtop'
             f3 = open(nmfsimtop_input_file,"w")
             f3.close()
             f3 = open(nmfsimtop_input_file,"a")
-            f3.write("1\n")
-
-            print('Running NMFSimTop...')
+            f3.write("1 "+str(kskeleton)+"\n")
+            print('Creating NMFSimTop input file: ' + nmfsimtop_input_file)
             for itime, data_time in enumerate(table_indices):
-                write_string = " ".join([str(len(data_time)), " ".join([str(s) for s in data_time]), str(np.int(nconcurrences[itime])),"\n"])
-                f3.close()
-                f3 = open(nmfsimtop_input_file,"a")
-                if remove_dimension1:
-                    if reverse_filtration_order and nconcurrences[itime] < max_nconcurrences:
-                        f3.write(write_string)
-                    elif nconcurrences[itime] > 0:
-                        f3.write(write_string)
-                else:
-                    f3.write(write_string)
+                if len(data_time) > 0:
+	                write_string = " ".join([str(len(data_time)-1), " ".join([str(s) for s in data_time]), str(np.int(nconcurrences[itime])),"\n"])
+	                f3.close()
+	                f3 = open(nmfsimtop_input_file,"a")
+	                if remove_dimension1:
+	                    if reverse_filtration_order and nconcurrences[itime] < max_nconcurrences:
+	                        f3.write(write_string)
+	                    elif nconcurrences[itime] > 1:
+	                        f3.write(write_string)
+	                else:
+	                    f3.write(write_string)
 
             f3.close()
-            print(write_string)
-            cmd = './Persistence_ViditNanda/a.out nmfsimtop ' + nmfsimtop_input_file + ' ' + nmfsimtop_output_file
-            print(cmd)
-            os.system(cmd)
+            args = " ".join(['/Users/arno/Software/Pers2/pers', 'nmfsimtop', nmfsimtop_input_file, nmfsimtop_output_string])
+            print(args); print('Running NMFSimTop...')
+            p = call(args, shell="True")
 
         if debug_run1:
-            raise
+            raise(Exception('Done with debug run.'))
