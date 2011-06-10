@@ -7,10 +7,10 @@ Persistence code was developed by Dmitriy Morozov (Dionysus) and Vidit Nanda (nm
 (c) Arno Klein  .  arno@binarybottle.com  .  2011  .  MIT license
 """
 
-kskeleton = 1  # A k-simplex has k+1 vertices
+kskeleton = 3  # A k-simplex has k+1 vertices
 reverse_filtration_order = 1
 persistence_type = 3  # static_persistence = 1; dynamic_persistence = 2; nmfsimtop = 3
-remove_dimension1 = 0
+remove_dimension1 = 1
 
 data_path = '/hd2/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
 table_path = '/projects/homology/output/tables/'
@@ -26,7 +26,7 @@ import pylab as plt
 from itertools import combinations
 import time
 
-debug_run1 = 1
+debug_run1 = 0
 test = 0
 
 if persistence_type==1 or persistence_type==2:
