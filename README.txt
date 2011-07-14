@@ -1,31 +1,73 @@
-"""
-Use FSL's mcflirt to register fMRI data to middle image of first run.
+-------------------------
+step1_fslabels_to_fmri.py
+-------------------------
+Preprocess functional data to extract activity in gray matter.
 
-mcflirt -> to get realigned + mean time series
-bbregister -> mean to freesurfer
-vol2vol -> aseg.mgz : brainmask for rapidart
-vol2vol -> ribbon.mgz : gray ribbon for masking functionals
-rapidart -> to get outliers
+1. Realign each functional run to its mean volume.
+2. Register the mean functional image to the corresponding FreeSurfer structural data.
+3. Inverse transform the FreeSurfer labels to the mean functional image.
+4. Mask each functional image in the time series with the brain mask.
 
+Programs: FSL, FreeSurfer
 
-(c) Arno Klein  .  arno@binarybottle.com  .  2011
-"""
+1. mcflirt:        get realigned + mean time series
+2. bbregister:     register mean to FreeSurfer
+3. mri_aparc2aseg: map cortical labels to the segmentation volume
+   mri_vol2vol:    transform labels to fmri data
+4. mri_mask:       mask functionals with the brain mask
 
-import os,sys,warnings,glob
+-----------------
+step2_activity.py
+-----------------
+Prepare table of average activity per labeled region.
 
-from settings import func_path, func_path_end, xfm_path, xfm_path_end
+This program outputs 1 table file per subject,
+where each row is a region and columns are time points (e.g., fMRI TRs).
+The first column contains the label indices.
 
-for subject_path in glob.glob(label_path + "*" + label_path_end):
-	subject_id = subject_path.split(label_path)[-1].split(label_path_end)[0]
-	print subject_id
+Calls label_list = '/projects/homology/region_nums_names.txt'
 
-    label_file = label_path + subject_id + label_path_end
-    xfm_file = xfm_path + subject_id + xfm_path_end
-	func_file = func_path + subject_id + func_path_end
-    out_file = label_path + subject_id + labelfunc_path_end
+---------------
+step3_filter.py
+---------------
+1. Detrend activity for each region (table row).
+2. Denoise activity for each region by number of median absolute deviations from the median.
+3. Bandlimit the frequencies of activity for each region.
 
-    if os.path.exists(out_file):
-		pass
-	else:
-		cmd = 'flirt -in ' + label_file + ' -ref ' + func_file + ' -applyxfm -init ' + xfm_file + ' -out ' + out_file + ' -interp nearestneighbour'
-		print(cmd); os.system(cmd)
+thresh_deviations = 5
+TR = 2
+freq_lower = 0.0
+freq_upper = 0.10
+
+---------------
+step4_binary.py
+---------------
+1. Remove rows of a table file with least variation (interquartile range over median).
+2. Binarize the remaining rows, with a 1 indicating high activity.
+
+min_percentile_variation = 20
+min_percentile_activity = 80
+
+---------------------
+step5_concurrences.py
+---------------------
+Run frequency filtration on a binary table.
+
+Filter the table by the number of times (frequency) that the active regions 
+of a given column are repeated as a subset of the active regions of the other columns.
+The complex at frequency level f includes all concurrences that happen at least f times.
+
+Calls detrendR.py:
+R code for robust detrending of data. (c) Steve Ellis
+
+--------------------
+step6_persistence.py
+--------------------
+Compute persistence from a binary table of activity data.
+
+Persistence code was developed by Dmitriy Morozov (Dionysus) and Vidit Nanda (nmfsimtop).
+
+kskeleton = 3  # A k-simplex has k+1 vertices (for Dionysus)
+reverse_filtration_order = 1
+persistence_type = 2  # static_persistence = 1; dynamic_persistence = 2; nmfsimtop = 3
+remove_dimension1 = 1

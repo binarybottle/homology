@@ -29,54 +29,49 @@ import time
 debug_run1 = 0
 test = 0
 
-if persistence_type==1 or persistence_type==2:
+if persistence_type == 1 or persistence_type == 2:
     from dionysus import Simplex, data_dim_cmp, dim_data_cmp, closure, Filtration, StaticPersistence, DynamicPersistenceChains
+
     plot_persistence_diagrams = 0
 
 if __name__ == '__main__':
-  
-  # Iterate over subjects
+
+# Iterate over subjects
     for subject_id in os.listdir(data_path):
         table_file = table_path + subject_id + table_end
         print('Load binary activity table: ' + table_file)
         if test:
             table_files = ['test_complex']
-            test_complex = [[64],[26,35],[54],[69],[2],[64],[16,35,82],[26,35],[54],[69],  
-                            [2],[64],[16,35,82],[26,35],[54],[69],[33,81],[2],[64],  
-                            [16,35,82],[26,35],[54],[69],[8,71],[33,81],[2]]
-            test_nconcurrences = np.array([4,4,4,4,4,4,3,4,4,4,  
-                            4,4,3,4,4,4,2,4,4,  
-                            3,4,4,4,1,2,4])
-            test_complex = [[1,2,3],[1,3,4],[1,2,3],[1,4],[1,2],[2,3],[1,3],[1,3],[1,2],[4]]
-            test_nconcurrences = np.array([1,2,2,3,2,3,3,3,3])
 
-            test_complex = [[1,2,3],[3,4],[1,2],[2,3],[1,3],[4],[3]]
-            test_nconcurrences = np.array([1,2,3,2,3,4,7])
-            test_complex = [[1,2,3],[3,4],[2,3],[1,3],[1,2],[4],[3]]
-            test_nconcurrences = np.array([3,2,2,1,1,1,1])
+            table_indices = [[64], [26, 35], [54], [69], [2], [64], [16, 35, 82], [26, 35], [54], [69],
+                [2], [64], [16, 35, 82], [26, 35], [54], [69], [33, 81], [2], [64],
+                [16, 35, 82], [26, 35], [54], [69], [8, 71], [33, 81], [2]]
+            test_nconcurrences = np.array([4, 4, 4, 4, 4, 4, 3, 4, 4, 4,
+                                           4, 4, 3, 4, 4, 4, 2, 4, 4,
+                                           3, 4, 4, 4, 1, 2, 4])
 
-            test_complex = [[1,2,3],[1,3,4],[1,2,3],[1,4],[3,4],[1,2],[2,3],[1,4],[3,4],[1,4],[3,4],[2]]
-            test_nconcurrences = np.array([2,1,2,4,4,3,3,4,4,4,4,5])
+            table_indices = [ [1,2], [1,3], [3,4], [1,2], [1,3], [3,4], [2,4], [1,2], [2,3], [1,3], [2,4], [3,4],
+                            [2,3,4], [1,2], [1,3], [2,3,4], [1,2,3], [5,6] ]
+ 
+            table_indices = [ [1,2], [2,3], [4], [5,6], [1,6],
+                [1,2], [2,3], [3,5], [4], [5,6], [1,6],
+                [1,2], [2,3], [3,5], [5,6], [1,6], [3,4], [4,5], [1,7], [2,7],
+                [1,2], [2,3], [5,6], [1,6], [3,4,5], [1,7], [2,7], [6,7],
+                [1,2], [2,3], [5,6], [1,6], [3,4,5], [1,7], [2,7], [6,7], [3,7],
+                [1,2], [2,3], [5,6], [1,6], [3,4,5], [1,7], [2,7], [6,7], [3,7], [5,7],
+                [1,2,7], [2,3], [5,6], [1,6], [3,4,5], [6,7], [3,7], [5,7] ]
 
-            test_complex = [[1,2,3],[3,4],[3,4],[1,2],[2,3],[1,3],[1,3],[1,2],[4],[4],[3]]
-            test_nconcurrences = np.array([1,2,2,3,2,3,3,3,4,4,7])
+            nconcurrences = np.zeros(len(table_indices), dtype=int)
+            iconcurrences = 0
+            for isimplex, simplex in enumerate(table_indices):
+                for simplex2 in table_indices:
+                    if len(np.intersect1d(simplex,simplex2)) == len(simplex):
+                        nconcurrences[isimplex] += 1
 
-
-            test_complex = [[1,2,3],[1,3,4],[1,2,3],[1,4],[3,4],[1,2],[2,3],[1,4],[3,4],[1,4],[3,4],[2]]
-            test_nconcurrences = np.array([2,1,2,5,5,3,3,5,5,5,5,4])
-
-            test_complex = [[1,2,3],[1,3,4],[1,4],[3,4],[1,2],[2,3],[2]]
-            test_nconcurrences = np.array([2,1,5,5,3,3,4])
-
-
-            table_indices = test_complex
-            nconcurrences = test_nconcurrences
-            print('test_complex:')
+            print('table_indices:')
             print(table_indices)
-            print('test_nconcurrences:')
-            print(nconcurrences)
-        else:
 
+        else:
             """
             Load frequency filtration numbers.
             """
@@ -87,15 +82,15 @@ if __name__ == '__main__':
             """
             Import table and extract all non-empty rows (not incl. first column).
             """
-            table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
-            [nrows,ncols] = np.shape([s for s in table_reader])
+            table_reader = csv.reader(open(table_file, 'r'), delimiter = ',', quotechar = '"')
+            [nrows, ncols] = np.shape([s for s in table_reader])
             ncols = ncols - first_column
             print('Number of columns = ' + str(ncols))
             print('Number of rows = ' + str(nrows))
-            table = np.zeros((nrows,ncols))
-            table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
+            table = np.zeros((nrows, ncols))
+            table_reader = csv.reader(open(table_file, 'r'), delimiter = ',', quotechar = '"')
             for irow, row in enumerate(table_reader):
-                table[irow] = [np.int(np.float(s)) for s in row if s!=''][first_column::]
+                table[irow] = [np.int(np.float(s)) for s in row if s != ''][first_column::]
 
             """
             Transpose table and create a new list of lists of indices for each original table column.
@@ -124,7 +119,7 @@ if __name__ == '__main__':
         # Persistence #
         ###############
         """
-        if persistence_type==1 or persistence_type==2:
+        if persistence_type == 1 or persistence_type == 2:
             print('--- Dionysus software for persistence homology ---')
 
             # Create simplices
@@ -149,16 +144,16 @@ if __name__ == '__main__':
             # Compute the k-skeleton of the closure of the list of simplices.
             # A k-simplex has k+1 vertices.
             print("Compute all " + str(kskeleton) + "-skeleton faces for each simplex...")
-            complex = closure(levels, kskeleton+1)
-            print(str(complex.__len__()) + ' faces computed') 
+            complex = closure(levels, kskeleton + 1)
+            print(str(complex.__len__()) + ' faces computed')
             print(time.asctime())
 
-            print("Apply Filtration")      
+            print("Apply Filtration")
             f = Filtration(complex, dim_data_cmp)
             #print("Complex in the filtration order:" + ', '.join((str(s) for s in f)))
             print(time.asctime())
 
-        if persistence_type==1:
+        if persistence_type == 1:
             """
             ######################
             # Static persistence #
@@ -222,14 +217,15 @@ if __name__ == '__main__':
 
             smap = p.make_simplex_map(f)
             for i in p:
-                print("dim %d: %s (%d) - %s (%d)" % (smap[i].dimension(), smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
+                print("dim %d: %s (%d) - %s (%d)" % (
+                    smap[i].dimension(), smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
                 #print(i.sign(), i.pair().sign())
                 #print("%s (%d) - %s (%d)" % (smap[i], i.sign(), smap[i.pair()], i.pair().sign()))
                 #print("Cycle (%d):" % len(i.cycle), " + ".join((str(smap[ii]) for ii in i.cycle)))
             print("Number of unpaired simplices: %d" % (len([i for i in p if i.unpaired()])))
             print(time.asctime())
 
-        elif persistence_type==2:
+        elif persistence_type == 2:
             """
             ##############################
             # Dynamic Persistence Chains #
@@ -261,7 +257,7 @@ if __name__ == '__main__':
             """
             print("Initialize DynamicPersistenceChains...")
             p = DynamicPersistenceChains(f)
-                  
+
             print("Pair simplices...")
             p.pair_simplices()
             print(time.asctime())
@@ -273,8 +269,8 @@ if __name__ == '__main__':
             out_file2 = table_path + subject_id + out_path_end2
             if not test:
                 if plot_persistence_diagrams:
-                    f1 = open(out_file1,"w")
-                f2 = open(out_file2,"w")
+                    f1 = open(out_file1, "w")
+                f2 = open(out_file2, "w")
 
             smap = p.make_simplex_map(f)
             for i in p:
@@ -287,32 +283,33 @@ if __name__ == '__main__':
                 else:
                     cycle = i.pair().cycle
                     death_value = smap[i.pair()].data
-                #print(birth.data, death_value, max_nconcurrences)
-                if birth.data > 0 and birth.data != death_value and \
-                    birth.data != max_nconcurrences and \
-                    death_value != max_nconcurrences:
+                    #print(birth.data, death_value, max_nconcurrences)
+                if birth.data > 0 and birth.data != death_value and\
+                   birth.data != max_nconcurrences and\
+                   death_value != max_nconcurrences:
                     smap_str = ''
-                    for ii in cycle: 
+                    for ii in cycle:
                         smap_str = smap_str + " " + str(smap[ii])
                     ddate = death_value
                     bdate = birth.data
-                    s0 = [str(birth.dimension()),str(bdate),str(ddate)]
+                    s0 = [str(birth.dimension()), str(bdate), str(ddate)]
                     s1 = " ".join(s0)
-                    s2 = " ".join([s1,smap_str])
-                    print(" ".join([s2,"\n"]))
+                    s2 = " ".join([s1, smap_str])
+                    print(" ".join([s2, "\n"]))
                     if not test:
                         if plot_persistence_diagrams:
-                            f1.writelines(" ".join([s1,"\n"]))
-                        f2.writelines(" ".join([s2,"\n"]))
+                            f1.writelines(" ".join([s1, "\n"]))
+                        f2.writelines(" ".join([s2, "\n"]))
             if not test:
                 f2.close()
                 if plot_persistence_diagrams:
                     f1.close()
                     cmd = 'python draw.py ' + out_file1
-                    print(cmd); os.system(cmd)
+                    print(cmd);
+                    os.system(cmd)
             print(time.asctime())
-            
-        elif persistence_type==3:
+
+        elif persistence_type == 3:
             """
             This program calls code developed by Vidit Nanda:
             pers <input file name> nmfsimtop <output file string>
@@ -375,28 +372,31 @@ if __name__ == '__main__':
             """
             nmfsimtop_input_file = table_path + 'nmfsimtop/' + subject_id + '_nmfsimtop_input.txt'
             nmfsimtop_output_string = table_path + 'nmfsimtop/' + subject_id + '_nmfsimtop'
-            f3 = open(nmfsimtop_input_file,"w")
+            f3 = open(nmfsimtop_input_file, "w")
             f3.close()
-            f3 = open(nmfsimtop_input_file,"a")
-            f3.write("1 "+str(kskeleton)+"\n")
+            f3 = open(nmfsimtop_input_file, "a")
+            f3.write("1 " + str(kskeleton) + "\n")
             print('Creating NMFSimTop input file: ' + nmfsimtop_input_file)
             for itime, data_time in enumerate(table_indices):
                 if len(data_time) > 0:
-	                write_string = " ".join([str(len(data_time)-1), " ".join([str(s) for s in data_time]), str(np.int(nconcurrences[itime])),"\n"])
-	                f3.close()
-	                f3 = open(nmfsimtop_input_file,"a")
-	                if remove_dimension1:
-	                    if reverse_filtration_order and nconcurrences[itime] < max_nconcurrences:
-	                        f3.write(write_string)
-	                    elif nconcurrences[itime] > 1:
-	                        f3.write(write_string)
-	                else:
-	                    f3.write(write_string)
+                    write_string = " ".join([str(len(data_time) - 1), " ".join([str(s) for s in data_time]),
+                                             str(np.int(nconcurrences[itime])), "\n"])
+                    f3.close()
+                    f3 = open(nmfsimtop_input_file, "a")
+                    if remove_dimension1:
+                        if reverse_filtration_order and nconcurrences[itime] < max_nconcurrences:
+                            f3.write(write_string)
+                        elif nconcurrences[itime] > 1:
+                            f3.write(write_string)
+                    else:
+                        f3.write(write_string)
 
             f3.close()
-            args = " ".join(['/Users/arno/Software/Pers2/pers', 'nmfsimtop', nmfsimtop_input_file, nmfsimtop_output_string])
-            print(args); print('Running NMFSimTop...')
-            p = call(args, shell="True")
+            args = " ".join(
+                ['/Users/arno/Software/Pers3/pers', 'nmfsimtop', nmfsimtop_input_file, nmfsimtop_output_string])
+            print(args);
+            print('Running NMFSimTop...')
+            p = call(args, shell = "True")
 
         if debug_run1:
             raise(Exception('Done with debug run.'))
