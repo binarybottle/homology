@@ -11,7 +11,7 @@ The complex at frequency level f includes all concurrences that happen at least 
 
 filter_by_frequency = 1
 
-data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
+data_path = '/hd2/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
 table_path = '/projects/homology/output/tables/'
 table_end = '_binary.csv'
 nconcurrences_file_end = '_concurrences.txt'
@@ -50,7 +50,7 @@ if __name__ == '__main__':
             table_reader = csv.reader(open(table_file,'r'), delimiter=',', quotechar='"')
             for irow, row in enumerate(table_reader):
                 table[irow] = [np.int(np.float(s)) for s in row if s!=''][first_column::]
-
+            
             """
             FREQUENCY FILTRATION:
             Filter the table by the number of times (frequency) that the active regions 
@@ -63,13 +63,11 @@ if __name__ == '__main__':
                 for icol1 in range(ncols):
                     i1 = np.nonzero(table[:,icol1]==1)[0]
                     if len(i1) > 0:
-                        nconcurrences[icol1] += 1
                         nregions[icol1] = len(i1)
                         for icol2 in range(ncols):
-                            if icol2 != icol1:
-                                i2 = np.nonzero(table[:,icol2]==1)[0]
-                                if len(np.intersect1d(i1,i2)) == len(i1):
-                                    nconcurrences[icol1] += 1
+                            i2 = np.nonzero(table[:,icol2]==1)[0]
+                            if len(np.intersect1d(i1,i2)) == len(i1):
+                                nconcurrences[icol1] += 1
                 max_nconcurrences = np.max(nconcurrences)
                 print('Maximum number of concurrences = ' + str(max_nconcurrences))
                 # Save the number of concurrences in a text file:
