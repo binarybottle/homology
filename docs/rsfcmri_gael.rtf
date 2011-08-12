@@ -1,0 +1,51 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red17\green27\blue11;}
+\margl1440\margr1440\vieww10380\viewh12380\viewkind0
+\deftab720
+\pard\pardeftab720\ql\qnatural
+
+\f0\fs26 \cf0 From: 
+\b Susan Whitfield-Gabrieli
+\b0  \uc0\u8234 <{\field{\*\fldinst{HYPERLINK "mailto:swg@mit.edu"}}{\fldrslt \cf2 \ul \ulc2 swg@mit.edu}}>\uc0\u8236 \
+Date: Thu, Mar 10, 2011 at 10:10 AM\
+\
+\
+I'd recommend a band pass filter for resting scans with the low pass being <\
+.1HZ.\
+Often people something like (0.004 < f < 0.08 Hz). There are a couple of papers\
+that discuss the influence of\
+1. when best to apply the bpf wrt other preprocessing steps\
+2. how the major action is in this range as opposed to higher freq (Salvadore)\
+however I'm not aware of any paper talking about the bpf effect on graph\
+metrics...but they might be out there!\
+\pard\pardeftab720\ql\qnatural
+\cf0 \
+\
+I'd use a band pass filter, cut above .1 Hz, and below half the\
+acquisition length.\
+\
+Slice-time interpolate, realign, coregister, and do the best\
+normalization you can[*]. Detrend and filter. Blur a bit the signal\
+(CanICA has an option to do that), and vary the blur depending on the\
+quality of your data and your normalization. The crappier the data, the\
+more blur.\
+\
+[1] X.N. Zuo et al., 'Reliable intrinsic connectivity networks:\
+Test\'96retest evaluation using ICA and dual regression approach',\
+NeuroImage 2009\
+\
+[2] G. Varoquaux et al., 'A group model for stable multi-subject ICA on\
+fMRI datasets', NeuroImage 2010\
+\
+[3] G. Varoquaux et al., 'ICA-based sparse feature recovery from fMRI\
+datasets', ISBI 2009\
+\
+[4] P. Bellec et al., 'Multi-level bootstrap analysis of stable clusters\
+in resting-state fMRI', NeuroImage 2010\
+\
+[5] G. Varoquaux et al. 'Detection of brain functional-connectivity\
+difference in post-stroke patients using group-level covariance\
+modeling', MICCAI 2010\
+\
+}

@@ -1,0 +1,71 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf290
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red234\green255\blue219;\red92\green175\blue39;\red234\green255\blue219;
+\red92\green175\blue39;}
+\margl1440\margr1440\vieww10760\viewh11120\viewkind0
+\deftab720
+\pard\pardeftab720\ql\qnatural
+
+\f0\fs26 \cf2 \cb3 satra\cf0 \cb1 's setup follows\'a0behzadi et al., 2007\'a0(in our articles/CompCor_fmri_2007.pdf)'s\'a0component correlation method. \'a0according to \cf2 \cb3 satra\cf0 \cb1 :\
+\
+"they essentially select noisy voxels and do a pca on it\
+select the top few components and regress them out from the data"\
+\
+Physiological sources of noise primarily include cardiac pulsations and respiratory-induced modulations of the main magnetic field. Additional sources include blood flow changes coupled to end-tidal C02 and vasomotion occurring at 0.1 Hz (Hu et al. 1995; Dagli et al. 1999; Glover et al. 2000a).\
+\
+yeo, 2010:\
+Several sources of spurious or regionally nonspecific variance then were removed by regression of nuisance variables including: six parameter rigid body head motion (obtained from motion correction), the signal averaged over the whole-brain, the signal averaged over the lateral ventricles, and the signal averaged over a region centered in the deep cerebral white matter. Temporally- shifted versions of these waveforms also were removed by inclusion of the first temporal derivatives (computed by backward differences) in the linear model. This regression procedure removes variance unlikely to represent regionally specific correlations of neuronal origin. Of note, the global (whole-brain) signal correlates with respiration-induced fMRI signal fluctuations [47,73,74]. By removing global signal, variance contributed by physiological artifacts is minimized. Removal of signals correlated with ventricles and white matter further reduces non-neuronal contributions to BOLD correlations. Removal of global signal also causes a shift in the distribution of correlation coefficients such that there are approximately equal numbers of positive and negative correlations making interpretation of the sign of the correlation ambiguous [47,75,76]. This effect is not directly relevant to the current analyses as degree connectivity is computed based on the correlations that exceed a positive threshold. Finally, for computational efficiency, we down sampled the data to 4 mm isotropic voxels.\
+\
+@rno: \
+
+\fs20 \
+\pard\pardeftab720\ql\qnatural
+\cf0 2. bandpass filtering of resting state data
+\fs26 \
+
+\fs20 \
+while trying to track down the rationale behind low pass / bandpass filtering settings,\'a0
+\fs26 the reasons i've found so far are:\
+\
+1. default software settings\
+2. low power beyond 0.10\
+3. citing prior work, such as biswal (1995)\
+
+\fs20 \
+regarding #3, some papers like thomas\'a0
+\fs26 yeo's (low pass = 0.08Hz in\'a02010) cite biswal (low pass = 0.08Hz in 1995) and biswal cites\'a0\cf4 \cb5 rao\cf0 \cb1 \'a0et al. (1993). \'a0all i can find in\'a0\cf4 \cb5 rao\cf0 \cb1 \'a0is "the delay in signal change is ... (6 to 8 seconds) from movement onset to maximal signal change and ... (8 to 10 seconds) from movement cessation to baseline signal." \'a0otherwise, no cutoff suggestions. \'a0in cordes (2001) they state in their abstract:\
+\pard\pardeftab720\ql\qnatural
+
+\fs18 \cf0 \
+"In four healthy volunteers, ... We calculated the\'a0relative amounts of the spectrum that were in the low-frequency (0 to 0.1 Hz), the respiratory frequency (0.1 to 0.5 Hz), and cardiac-frequency range (0.6 to 1.2 Hz).
+\fs26 \
+
+\fs18 \
+RESULTS: For each volunteer, resting-state maps that resembled task-activation maps were
+\fs26 \
+
+\fs18 obtained. For the auditory and visual cortices, the correlation coef\uc0\u64257 cient depended almost
+\fs26 \
+
+\fs18 exclusively on low frequencies (,0.1 Hz). For all cortical regions studied, low-frequency \uc0\u64258 uctuations contributed more than 90% of the correlation coef\u64257 cient. Physiological (respiratory\'a0and cardiac) noise sources contributed less than 10% to any functional connectivity MR imaging map. In blood vessels and cerebrospinal \u64258 uid, physiological noise contributed more to\'a0the correlation coef\u64257 cient.
+\fs26 \
+
+\fs18 \
+CONCLUSION: Functional connectivity in the auditory, visual, and sensorimotor cortices is
+\fs26 \
+
+\fs18 characterized predominantly by frequencies slower than those in the cardiac and respiratory
+\fs26 \
+
+\fs18 cycles. In functionally connected regions, these low frequencies are characterized by a high
+\fs26 \
+
+\fs18 degree of temporal coherence."
+\fs26 \
+\
+\pard\pardeftab720\ql\qnatural
+\cf0 martin lindquist:\
+As for your second question - I have had similar problems understanding the resting state literature. I have always been frustrated by the seemingly haphazard choice of low pass filter thresholds. It often seems that they cite back to a few early papers, who in turn made some rather arbitrary choices to begin with. It is not very principled at all. I think someone needs to seriously study the implications of these choices..........\
+\pard\pardeftab720\ql\qnatural
+\cf0 \
+}

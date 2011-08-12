@@ -1,0 +1,2 @@
+- Data acquired on the same magnet as NewYork_b, but using a different scan sequence.
+- same sequence as NewYork_a

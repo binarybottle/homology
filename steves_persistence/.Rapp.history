@@ -1,0 +1,840 @@
+load("/Users/arno/Dropbox/share_homology/Steves_homology_code/Homology.RData")
+ls()
+rm(homol)
+ls()
+rm(maxdim)
+rm(MAXDIM)
+ls()
+acyclic
+foo <- function(x) {#
+if(x < 0 ) { cat("Well I'll be a monkey's uncle!") } else {sqrt(x)}#
+}
+foo(-4)
+foo(11)
+rm(foo)
+library(Matrix)
+library(MASS)
+/Users/arno/Data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/sub01912
+/Users/arno/Documents/Projects/homology/output/tablesOLD/sub01912_activity.csv
+snL <- sub01912
+snL <- "sub01912"#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")
+xile
+library(Matrix)
+ls()
+#
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+system.time(#
+homol <-FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kind\#
+OfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trig\#
+hs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, bla\#
+hblahblah = bbb)#
+)
+#
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+trighs <- 2#
+#
+system.time(#
+homol <-FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kind\#
+OfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, bla\#
+hblahblah = bbb)#
+)
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+trighs <- 2#
+#
+system.time(#
+homol <-FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37000, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, bla\#
+hblahblah = bbb)#
+)
+snL <- "sub01912"#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+library(MASS)#
+library(Matrix)#
+#
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+trighs <- 2#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37000, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, bla\#
+hblahblah = bbb)#
+)
+snL <- "sub01912"#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+library(MASS)#
+library(Matrix)#
+#
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+trighs <- 2
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37000, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, bla\#
+hblahblah = bbb)
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37000, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, blahblahblah = bbb)#
+)
+snL
+names(homol)
+homol$comment
+homolo <- homol$homology.output
+names(homolo)
+x <- homolo[["1"]]
+names(x)
+x$message
+x$BettiNumbers
+extractBettis(homol, 1)
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/Homology.RData")
+snail <- c("sub01912")
+#
+ydate <- date()#
+#
+for( i in 1:length(snail) ) {#
+#
+if( !any(search() == "package:Matrix") )  {#
+cat("Yo! 'Matrix' isn't attached!")#
+break#
+}#
+#
+snL <- snail[i]#
+#
+cat("\n\n       NOW WORKING ON SUBJECT", i, ", viz., ", snL, ".\n")#
+#
+xdate <- date()#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+library(MASS)#
+library(Matrix)#
+#
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+trighs <- 2#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, blahblahblah = bbb)#
+)#
+#
+SI()#
+#
+alarm()#
+#
+cat("  Started", xdate, "finished", date(), ".\n")#
+#
+cat(" Check filtration condition.\n")#
+#
+x <- homol$homology.output#
+#
+n <- length(x)#
+#
+if(n > 1) {#
+#
+zyx <- matrix(rep(NA, 2*(n-1)), ncol = 2)#
+dimnames(zyx) <- list( as.character(2:n), c("acyclic", "wholeEnchilada") )#
+#
+for(i in 2:n) {#
+xaw <- x[[i]]$excisionTrickPOutput; xaw <- xaw$AandWs#
+xa <- xaw$acyclic#
+xxx <- append(xa, xaw$whatsLeft)#
+#
+yaw <- x[[i-1]]$excisionTrickPOutput; yaw <- yaw$AandWs#
+ya <- yaw$acyclic#
+yyy <- append(ya, yaw$whatsLeft)#
+#
+zyx[i-1, "acyclic"] <- subCmplx(xa, ya)#
+zyx[i-1, "wholeEnchilada"] <- subCmplx(xxx, yyy)#
+}#
+#
+if( all( apply(zyx, 2, all) ) ) {#
+cat("   Just as filtered as filtered can be!\n")#
+   } else {#
+cat("\n   SUBJECT", snL, "IS NOT FILTERED! HERE'S SAD STORY:\n")#
+print(zyx)#
+break#
+   }#
+          } else {#
+cat("  Only one frequency level.  'Filteredness' isn't an issue.\n")#
+       }#
+#
+yile <- paste(snL, "_PrdyHomolDM.RData", sep = "")#
+#
+save( homol, file = paste("./", yile, sep = "") )#
+#
+rm(homol)#
+#
+}#
+#
+cat("\n\n       Done with this bunch. Started", ydate, "and now it's ...", date(), ".\n")#
+#
+rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/Homology.RData")
+snail <- c("sub01912")
+#
+ydate <- date()#
+#
+for( i in 1:length(snail) ) {#
+#
+if( !any(search() == "package:Matrix") )  {#
+cat("Yo! 'Matrix' isn't attached!")#
+break#
+}#
+#
+snL <- snail[i]#
+#
+cat("\n\n       NOW WORKING ON SUBJECT", i, ", viz., ", snL, ".\n")#
+#
+xdate <- date()#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+library(MASS)#
+library(Matrix)#
+#
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+trighs <- 2#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, blahblahblah = bbb)#
+)#
+#
+SI()#
+#
+alarm()#
+#
+cat("  Started", xdate, "finished", date(), ".\n")#
+#
+cat(" Check filtration condition.\n")#
+#
+x <- homol$homology.output#
+#
+n <- length(x)#
+#
+if(n > 1) {#
+#
+zyx <- matrix(rep(NA, 2*(n-1)), ncol = 2)#
+dimnames(zyx) <- list( as.character(2:n), c("acyclic", "wholeEnchilada") )#
+#
+for(i in 2:n) {#
+xaw <- x[[i]]$excisionTrickPOutput; xaw <- xaw$AandWs#
+xa <- xaw$acyclic#
+xxx <- append(xa, xaw$whatsLeft)#
+#
+yaw <- x[[i-1]]$excisionTrickPOutput; yaw <- yaw$AandWs#
+ya <- yaw$acyclic#
+yyy <- append(ya, yaw$whatsLeft)#
+#
+zyx[i-1, "acyclic"] <- subCmplx(xa, ya)#
+zyx[i-1, "wholeEnchilada"] <- subCmplx(xxx, yyy)#
+}#
+#
+if( all( apply(zyx, 2, all) ) ) {#
+cat("   Just as filtered as filtered can be!\n")#
+   } else {#
+cat("\n   SUBJECT", snL, "IS NOT FILTERED! HERE'S SAD STORY:\n")#
+print(zyx)#
+break#
+   }#
+          } else {#
+cat("  Only one frequency level.  'Filteredness' isn't an issue.\n")#
+       }#
+#
+yile <- paste(snL, "_PrdyHomolDM.RData", sep = "")#
+#
+save( homol, file = paste("./", yile, sep = "") )#
+#
+rm(homol)#
+#
+}#
+#
+cat("\n\n       Done with this bunch. Started", ydate, "and now it's ...", date(), ".\n")#
+#
+rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)
+search()
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/Homology.RData")
+#
+library(MASS)#
+library(Matrix)#
+#
+snail <- c("sub01912")   #, ...)#
+#
+ydate <- date()#
+#
+for( i in 1:length(snail) ) {#
+#
+if( !any(search() == "package:Matrix") )  {#
+cat("Yo! 'Matrix' isn't attached!")#
+break#
+}#
+#
+snL <- snail[i]#
+#
+cat("\n\n       NOW WORKING ON SUBJECT", i, ", viz., ", snL, ".\n")#
+#
+xdate <- date()#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+xmsk <- unDefMode#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+MAXDIM <- 1#
+#
+bbb <- 5#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+trighs <- 2#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, blahblahblah = bbb)#
+)#
+#
+SI()#
+#
+alarm()#
+#
+cat("  Started", xdate, "finished", date(), ".\n")#
+#
+cat(" Check filtration condition.\n")#
+#
+x <- homol$homology.output#
+#
+n <- length(x)#
+#
+if(n > 1) {#
+#
+zyx <- matrix(rep(NA, 2*(n-1)), ncol = 2)#
+dimnames(zyx) <- list( as.character(2:n), c("acyclic", "wholeEnchilada") )#
+#
+for(i in 2:n) {#
+xaw <- x[[i]]$excisionTrickPOutput; xaw <- xaw$AandWs#
+xa <- xaw$acyclic#
+xxx <- append(xa, xaw$whatsLeft)#
+#
+yaw <- x[[i-1]]$excisionTrickPOutput; yaw <- yaw$AandWs#
+ya <- yaw$acyclic#
+yyy <- append(ya, yaw$whatsLeft)#
+#
+zyx[i-1, "acyclic"] <- subCmplx(xa, ya)#
+zyx[i-1, "wholeEnchilada"] <- subCmplx(xxx, yyy)#
+}#
+#
+if( all( apply(zyx, 2, all) ) ) {#
+cat("   Just as filtered as filtered can be!\n")#
+   } else {#
+cat("\n   SUBJECT", snL, "IS NOT FILTERED! HERE'S SAD STORY:\n")#
+print(zyx)#
+break#
+   }#
+          } else {#
+cat("  Only one frequency level.  'Filteredness' isn't an issue.\n")#
+       }#
+#
+yile <- paste(snL, "_PrdyHomolDM.RData", sep = "")#
+#
+save( homol, file = paste("./", yile, sep = "") )#
+#
+rm(homol)#
+#
+}#
+#
+cat("\n\n       Done with this bunch. Started", ydate, "and now it's ...", date(), ".\n")#
+#
+rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/sub01912_PrdyHomolDM.RData")
+ls()
+names(homol)
+homol$homology.output
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/Homology.RData")
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+bbb <- 5#
+#
+trighs <- 3  # larger for defmode
+#
+library(MASS)#
+library(Matrix)#
+#
+snail <- c("sub01912")   #, ...)#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+MAXDIM <- 1#
+#
+xmsk <- unDefMode  # NULL  # whole brain#
+#
+omitFreq <- 0#
+#
+xcmnt <- "No comment!"#
+#
+bbb <- 0  # 0 for no comments?#
+#
+trighs <- 3  # larger for defmode#
+#
+#
+#
+ydate <- date()#
+#
+for( i in 1:length(snail) ) {#
+#
+if( !any(search() == "package:Matrix") )  {#
+cat("Yo! 'Matrix' isn't attached!")#
+break#
+}#
+#
+snL <- snail[i]#
+#
+cat("\n\n       NOW WORKING ON SUBJECT", i, ", viz., ", snL, ".\n")#
+#
+xdate <- date()#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = 2, blahblahblah = bbb)#
+)#
+#
+SI()#
+#
+alarm()#
+#
+cat("  Started", xdate, "finished", date(), ".\n")#
+#
+cat(" Check filtration condition.\n")#
+#
+x <- homol$homology.output#
+#
+n <- length(x)#
+#
+if(n > 1) {#
+#
+zyx <- matrix(rep(NA, 2*(n-1)), ncol = 2)#
+dimnames(zyx) <- list( as.character(2:n), c("acyclic", "wholeEnchilada") )#
+#
+for(i in 2:n) {#
+xaw <- x[[i]]$excisionTrickPOutput; xaw <- xaw$AandWs#
+xa <- xaw$acyclic#
+xxx <- append(xa, xaw$whatsLeft)#
+#
+yaw <- x[[i-1]]$excisionTrickPOutput; yaw <- yaw$AandWs#
+ya <- yaw$acyclic#
+yyy <- append(ya, yaw$whatsLeft)#
+#
+zyx[i-1, "acyclic"] <- subCmplx(xa, ya)#
+zyx[i-1, "wholeEnchilada"] <- subCmplx(xxx, yyy)#
+}#
+#
+if( all( apply(zyx, 2, all) ) ) {#
+cat("   Just as filtered as filtered can be!\n")#
+   } else {#
+cat("\n   SUBJECT", snL, "IS NOT FILTERED! HERE'S SAD STORY:\n")#
+print(zyx)#
+break#
+   }#
+          } else {#
+cat("  Only one frequency level.  'Filteredness' isn't an issue.\n")#
+       }#
+#
+yile <- paste(snL, "_PrdyHomolDM.RData", sep = "")#
+#
+save( homol, file = paste("./", yile, sep = "") )#
+#
+rm(homol)#
+#
+}#
+#
+cat("\n\n       Done with this bunch. Started", ydate, "and now it's ...", date(), ".\n")#
+#
+rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/Homology.RData")
+#
+library(MASS)#
+library(Matrix)#
+#
+snail <- c("sub01912")   #, ...)#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+MAXDIM <- 1#
+#
+xmsk <- unDefMode  # NULL  # whole brain#
+#
+omitFreq <- 0#
+#
+xtrcmmnt <- "; default mode"  # "; whole brain"#
+#
+trighs <- 3  # larger for defmode#
+#
+vrbst <- 0  # for absolutely no comments!#
+#
+bbb <- 5  # 0 for no followup comments#
+#
+xcmnt <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, xtrcmmnt)#
+#
+ydate <- date()#
+#
+for( i in 1:length(snail) ) {#
+#
+if( !any(search() == "package:Matrix") )  {#
+cat("Yo! 'Matrix' isn't attached!")#
+break#
+}#
+#
+snL <- snail[i]#
+#
+cat("\n\n       NOW WORKING ON SUBJECT", i, ", viz., ", snL, ".\n")#
+#
+xdate <- date()#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = vrbst, blahblahblah = bbb)#
+)#
+#
+SI()#
+#
+alarm()#
+#
+cat("  Started", xdate, "finished", date(), ".\n")#
+#
+cat(" Check filtration condition.\n")#
+#
+x <- homol$homology.output#
+#
+n <- length(x)#
+#
+if(n > 1) {#
+#
+zyx <- matrix(rep(NA, 2*(n-1)), ncol = 2)#
+dimnames(zyx) <- list( as.character(2:n), c("acyclic", "wholeEnchilada") )#
+#
+for(i in 2:n) {#
+xaw <- x[[i]]$excisionTrickPOutput; xaw <- xaw$AandWs#
+xa <- xaw$acyclic#
+xxx <- append(xa, xaw$whatsLeft)#
+#
+yaw <- x[[i-1]]$excisionTrickPOutput; yaw <- yaw$AandWs#
+ya <- yaw$acyclic#
+yyy <- append(ya, yaw$whatsLeft)#
+#
+zyx[i-1, "acyclic"] <- subCmplx(xa, ya)#
+zyx[i-1, "wholeEnchilada"] <- subCmplx(xxx, yyy)#
+}#
+#
+if( all( apply(zyx, 2, all) ) ) {#
+cat("   Just as filtered as filtered can be!\n")#
+   } else {#
+cat("\n   SUBJECT", snL, "IS NOT FILTERED! HERE'S SAD STORY:\n")#
+print(zyx)#
+break#
+   }#
+          } else {#
+cat("  Only one frequency level.  'Filteredness' isn't an issue.\n")#
+       }#
+#
+yile <- paste(snL, "_PrdyHomolDM.RData", sep = "")#
+#
+save( homol, file = paste("./", yile, sep = "") )#
+#
+rm(homol)#
+#
+}#
+#
+cat("\n\n       Done with this bunch. Started", ydate, "and now it's ...", date(), ".\n")#
+#
+rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/Homology.RData")
+#
+library(MASS)#
+library(Matrix)#
+#
+snail <- c("sub01912")   #, ...)#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+MAXDIM <- 1#
+#
+xmsk <- unDefMode  # NULL  # whole brain#
+#
+omitFreq <- 0#
+#
+xtrcmmnt <- "; default mode"  # "; whole brain"#
+#
+trighs <- 3  # larger for defmode#
+#
+vrbst <- 0  # for absolutely no comments!#
+bbb <- 0  # 0 for no followup comments#
+#
+xcmnt <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, xtrcmmnt)#
+#
+ydate <- date()#
+#
+for( i in 1:length(snail) ) {#
+#
+if( !any(search() == "package:Matrix") )  {#
+cat("Yo! 'Matrix' isn't attached!")#
+break#
+}#
+#
+snL <- snail[i]#
+#
+cat("\n\n       NOW WORKING ON SUBJECT", i, ", viz., ", snL, ".\n")#
+#
+xdate <- date()#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = vrbst, blahblahblah = bbb)#
+)#
+#
+SI()#
+#
+alarm()#
+#
+cat("  Started", xdate, "finished", date(), ".\n")#
+#
+cat(" Check filtration condition.\n")#
+#
+x <- homol$homology.output#
+#
+n <- length(x)#
+#
+if(n > 1) {#
+#
+zyx <- matrix(rep(NA, 2*(n-1)), ncol = 2)#
+dimnames(zyx) <- list( as.character(2:n), c("acyclic", "wholeEnchilada") )#
+#
+for(i in 2:n) {#
+xaw <- x[[i]]$excisionTrickPOutput; xaw <- xaw$AandWs#
+xa <- xaw$acyclic#
+xxx <- append(xa, xaw$whatsLeft)#
+#
+yaw <- x[[i-1]]$excisionTrickPOutput; yaw <- yaw$AandWs#
+ya <- yaw$acyclic#
+yyy <- append(ya, yaw$whatsLeft)#
+#
+zyx[i-1, "acyclic"] <- subCmplx(xa, ya)#
+zyx[i-1, "wholeEnchilada"] <- subCmplx(xxx, yyy)#
+}#
+#
+if( all( apply(zyx, 2, all) ) ) {#
+cat("   Just as filtered as filtered can be!\n")#
+   } else {#
+cat("\n   SUBJECT", snL, "IS NOT FILTERED! HERE'S SAD STORY:\n")#
+print(zyx)#
+break#
+   }#
+          } else {#
+cat("  Only one frequency level.  'Filteredness' isn't an issue.\n")#
+       }#
+#
+yile <- paste(snL, "_PrdyHomolDM.RData", sep = "")#
+#
+save( homol, file = paste("./", yile, sep = "") )#
+#
+rm(homol)#
+#
+}#
+#
+cat("\n\n       Done with this bunch. Started", ydate, "and now it's ...", date(), ".\n")#
+#
+rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)
+load("/Users/arno/Documents/Projects/homology/Steves_homology_code/Homology.RData")
+#
+library(MASS)#
+library(Matrix)#
+#
+snail <- c("sub01912")   #, ...)#
+#
+dty <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"#
+#
+MAXDIM <- 1#
+#
+xmsk <- unDefMode  # NULL  # whole brain#
+#
+omitFreq <- 0#
+#
+xtrcmmnt <- "; default mode"  # "; whole brain"#
+#
+trighs <- 3  # larger for defmode#
+#
+vrbst <- 0  # for absolutely no comments!#
+bbb <- 0  # 0 for no followup comments#
+#
+xcmnt <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, xtrcmmnt)#
+#
+ydate <- date()#
+#
+for( i in 1:length(snail) ) {#
+#
+if( !any(search() == "package:Matrix") )  {#
+cat("Yo! 'Matrix' isn't attached!")#
+break#
+}#
+#
+snL <- snail[i]#
+#
+if(bbb > 0) cat("\n\n       NOW WORKING ON SUBJECT", i, ", viz., ", snL, ".\n")#
+#
+xdate <- date()#
+#
+xile <- paste(snL, "_filtered.csv", sep = "")#
+#
+# NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!#
+#
+system.time(#
+homol <- FileToHomolP(file.name = xile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = .8, thresh = .8, mask = xmsk, noHomol = FALSE, omit.freq = omitFreq, kindOfBig = 37, drictree = dty, maxDim=MAXDIM, withEuler = FALSE, tires = trighs, DontSweatTheSmallStuff1 = 0, DontSweatTheSmallStuff2 = 12, traceIt = 2, checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = xcmnt, verbosity = vrbst, blahblahblah = bbb)#
+)#
+#
+SI()#
+#
+alarm()#
+#
+cat("  Started", xdate, "finished", date(), ".\n")#
+#
+cat(" Check filtration condition.\n")#
+#
+x <- homol$homology.output#
+#
+n <- length(x)#
+#
+if(n > 1) {#
+#
+zyx <- matrix(rep(NA, 2*(n-1)), ncol = 2)#
+dimnames(zyx) <- list( as.character(2:n), c("acyclic", "wholeEnchilada") )#
+#
+for(i in 2:n) {#
+xaw <- x[[i]]$excisionTrickPOutput; xaw <- xaw$AandWs#
+xa <- xaw$acyclic#
+xxx <- append(xa, xaw$whatsLeft)#
+#
+yaw <- x[[i-1]]$excisionTrickPOutput; yaw <- yaw$AandWs#
+ya <- yaw$acyclic#
+yyy <- append(ya, yaw$whatsLeft)#
+#
+zyx[i-1, "acyclic"] <- subCmplx(xa, ya)#
+zyx[i-1, "wholeEnchilada"] <- subCmplx(xxx, yyy)#
+}#
+#
+if( all( apply(zyx, 2, all) ) ) {#
+cat("   Just as filtered as filtered can be!\n")#
+   } else {#
+cat("\n   SUBJECT", snL, "IS NOT FILTERED! HERE'S SAD STORY:\n")#
+print(zyx)#
+break#
+   }#
+          } else {#
+cat("  Only one frequency level.  'Filteredness' isn't an issue.\n")#
+       }#
+#
+yile <- paste(snL, "_PrdyHomolDM.RData", sep = "")#
+#
+save( homol, file = paste("./", yile, sep = "") )#
+#
+rm(homol)#
+#
+}#
+#
+cat("\n\n       Done with this bunch. Started", ydate, "and now it's ...", date(), ".\n")#
+#
+rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)

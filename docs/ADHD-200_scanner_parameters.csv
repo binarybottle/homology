@@ -1,0 +1,16 @@
+,"Structural",,,"Functional (resting)",,
+,"TR (ms)","slice acquisition order","slice acquisition direction","TR (ms)","slice acquisition order (phase encoding direction)","slice acquisition direction"
+"Bradley Hospital/Brown University",2250,"A>>P (phase encoding direction)","sagittal",2000,"A>>P (phase encoding direction)","transversal"
+"Kennedy Krieger Institute, Johns Hopkins University","shortest","RL (foldover direction)","coronal (slice orientation)","user defined","AP (foldover direction)","transverse (slice orientation)"
+"NeuroIMAGE sample",2730,"A>>P (phase encoding direction)","S > C1.0",1960,"A>>P (phase encoding direction)","T > C-2.9 > S-1.5"
+"New York University Child Study Center",2530,"A>>P (phase encoding direction)","sagittal (orientation)",2000,"R>>L (phase encoding direction)","T > C-23.0"
+"Oregon Health & Science University",2300,"A>>P (phase encoding direction)","sagittal (slice orientation)",2500,"A>>P (phase encoding direction)","T > C-6.1"
+"Peking University (dataset1)",2530,"A>>P (phase encoding direction)","sagittal (orientation)",2000,"A>>P (phase encoding direction)","transversal"
+"Peking University (dataset2)",2530,"A>>P (phase encoding direction)","sagittal (orientation)",2000,"A>>P (phase encoding direction)","transversal"
+"Peking University (dataset3)",2000,,,2000,"2 : 2 : 30 (slice order)",
+"Peking University (dataset3)",1950,,,,,
+"Peking University (dataset3)",2530,,,,,
+"Peking University (dataset3)",1770,,,,,
+"Peking University (dataset3)",845,,,,,
+"University of Pittsburgh",2100,"R >> L (phase encoding direction)","T > C-14.2",1500,"P >> A (phase encoding direction)","T > C-14.2"
+"Washington University in St. Louis",2400,"A>>P (phase encoding direction)","sagittal (orientation)",2500,"A>>P (phase encoding direction)","T > C-14.2"
