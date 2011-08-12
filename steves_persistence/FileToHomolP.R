@@ -6,8 +6,8 @@ library(Matrix)
 
 # Files
 snail <- c("sub01912")   #, ...)
-inputdir <- "/Users/arno/Documents/Projects/homology/output/tablesNEW/"
-outputdir <- "./output/homolp"
+inputdir <- "/projects/homology/output/tablesNEW/"
+outputdir <- "/projects/homology/steves_persistence/output/homolp"
 outputfileappend <- "_PrdyHomolDM.RData"
 
 # Parameters

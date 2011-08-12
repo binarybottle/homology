@@ -2,7 +2,8 @@
 
 x <- 2:4 # (i.e., 2 through 4.)
 
-outputdir <- "/drop/share_homology/Steves_homology_code/output/euler/"
+inputdir <- "/projects/homology/steves_persistence/output/homolp/"  # /homolfp/"
+outputdir <- "/projects/homology/steves_persistence/output/euler/"
 inputfileappend <- "_PrdyHomolDM.RData"  # "_PrdyHomol.RData"
 outputfileappend <- "_Euler.RData"  # "_EulerDM.RData"
 
@@ -10,7 +11,6 @@ ydate <- date()
 
 # For subjects
 
-inputdir <- "/drop/share_homology/Steves_homology_code/output/homolp/"  # /homolfp/"
 snail <- c("sub01912")  #(sub18638", "sub26267", "sub54828")
 
 # Make a matrix to hold output.

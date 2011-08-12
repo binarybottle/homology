@@ -6,8 +6,8 @@ library(Matrix)
 
 # Files
 snail <- c("sub01912")   #, ...)
-outputdir <- "/drop/share_homology/Steves_homology_code/output/homolfp"
-inputdir <- "/drop/share_homology/Steves_homology_code/output/homolp"  # /homolfp/"
+outputdir <- "/projects/homology/steves_persistence/output/homolfp"
+inputdir <- "/projects/homology/steves_persistence/output/homolp"  # haven't tried: homolfp
 inputfileappend <- "_PrdyHomolDM.RData"
 
 # This it tricky. In the Fourier domain, for the homological analysis angular frequencies take the place of time points. In the data I'm using the low pass filter is so aggressive that there are a lot of angular frequencies, about half, as I recall, at which there is virtually no power. So I thought that since only half of the angular frequenies have a chance to be "active", I should take as the "active" angular frequencies, instead of the top 20%, half of that, viz. 10%.  That means I want a 90th, not 80th percentile threshold.
