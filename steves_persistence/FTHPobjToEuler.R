@@ -2,10 +2,13 @@
 
 x <- 2:4 # (i.e., 2 through 4.)
 
+# Files
 inputdir <- "/projects/homology/steves_persistence/output/homolp/"  # /homolfp/"
 outputdir <- "/projects/homology/steves_persistence/output/euler/"
 inputfileappend <- "_PrdyHomolDM.RData"  # "_PrdyHomol.RData"
 outputfileappend <- "_Euler.RData"  # "_EulerDM.RData"
+inputdatafile <- "/projects/homology/steves_persistence/Homology.RData"
+attach(inputdatafile)
 
 ydate <- date()
 
@@ -23,11 +26,6 @@ dimnames( HoustonEulers ) <- list( snail, as.character(x) )
 
 # For purposes of reading in files:
 
-xdn <- inputdir
-
-yile <- paste(snL, inputfileappend, sep = "")
-
-
 for(snL in snail) {
 
 # Print out reassurance.
@@ -38,7 +36,7 @@ cat("\n  Working on subject", snL, ".\n")
 
 yile <- paste(snL, inputfileappend, sep = "")
 
-attach( paste(xdn, yile, sep = "") )
+attach( paste(inputdir, yile, sep = "") )
 
 # Compute the Euler characteristics for all the frequency levels in 'x' "at once". Assume that the homology in the file is packaged in something called 'homol'.
 

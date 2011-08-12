@@ -7,8 +7,10 @@ library(Matrix)
 # Files
 snail <- c("sub01912")   #, ...)
 inputdir <- "/projects/homology/output/tablesNEW/"
-outputdir <- "/projects/homology/steves_persistence/output/homolp"
+outputdir <- "/projects/homology/steves_persistence/output/homolp/"
 outputfileappend <- "_PrdyHomolDM.RData"
+inputdatafile <- "/projects/homology/steves_persistence/Homology.RData"
+attach(inputdatafile)
 
 # Parameters
 MAXDIM <- 1  # 3 for unDefMode; 1 for whole brain
