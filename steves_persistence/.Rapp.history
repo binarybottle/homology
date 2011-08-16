@@ -841,3 +841,9 @@ rm(MAXDIM, trighs, omitFreq, xcmnt, xmsk)
 load("/Users/arno/Documents/homology/steves_persistence/Subjects_train.Rdata")
 ls()
 subjects
+load("/Users/arno/Documents/homology/steves_persistence/Homology.RData")
+ls()
+KleinBottle()
+KleinBottle
+ls()
+defaultMode

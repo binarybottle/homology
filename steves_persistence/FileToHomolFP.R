@@ -16,7 +16,7 @@ inputfile <- paste(subject, outputfileappendP, sep = "")
 
 system.time( homol <- FileToHomolFP(file.name = inputfile, TSEliot = NULL, rnames.in.col.1 = FALSE,
                                     roi.num = threshRegions, thresh = threshActivity, mask = useMask, noHomol = FALSE,
-                                    omit.freq = omitFreq, kindOfBig = kindobig, maxDim=MAXDIM, drictree = inputdirFP,
+                                    omit.freq = omitFreq, kindOfBig = kindobig, maxDim=MAXDIM, drictree = inputdir,
                                     aList = NULL, withEuler = FALSE, tires = trighs,
                                     DontSweatTheSmallStuff1 = donotsweat1, DontSweatTheSmallStuff2 = donotsweat2,
                                     traceIt = MAXDIM, returnReducedMat = TRUE, checkAcyc = FALSE,
@@ -61,7 +61,7 @@ if(n > 1) {
 
 # Save output
 outputfile <- paste(subject, outputfileappendFP, sep = ".")
-save( homol, file = paste(outputdirFP, outputfile, sep = "/") )
+save( homol, file = paste(outputdir, outputfile, sep = "/") )
 rm(homol, MAXDIM, trighs, omitFreq, commentFP, useMask)
 
 cat("\n\n       Done with subject ", subject, " -- started", startdate, "and ended", date(), "\n")

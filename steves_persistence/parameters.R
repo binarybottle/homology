@@ -48,16 +48,14 @@ bbb <- 5    # 0 for no followup comments
 #---------------------
 # FileToHomolP.R files
 #---------------------
-inputdirP <- paste(maindir, "input/tables/", sep = "")
-outputdirP <- paste(maindir, "output/homolp/", sep = "")
+inputdir <- paste(maindir, "input/tables/", sep = "")
+outputdir <- paste(maindir, "output/", sep = "")
 outputfileappendP <- paste("_Homology_", commentID, ".RData", sep = "")
 commentP <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, ", ", commentID)
 
 #----------------------
 # FileToHomolFP.R files
 #----------------------
-inputdirFP <- paste(maindir, "output/homolp", sep = "")
-outputdirFP <- paste(maindir, "output/homolfp", sep = "")
 outputfileappendFP <- paste("_FourierHomology_", commentID, ".RData", sep="")
 commentFP <- paste("Fourier domain; Persistence-ready;", date(), "MAXDIM=", MAXDIM, ", trighs=", trighs,
                    ", omitFreq=", omitFreq, ", ", commentID)
@@ -65,7 +63,5 @@ commentFP <- paste("Fourier domain; Persistence-ready;", date(), "MAXDIM=", MAXD
 #-----------------------
 # FTHPobjToEuler.R files
 #-----------------------
-inputdirE <- paste(maindir, "output/homolp/", sep = "")
-outputdirE <- paste(maindir, "output/euler/", sep = "")
 outputfileappendE <- paste("_Euler_", commentID, ".RData", sep = "")
 

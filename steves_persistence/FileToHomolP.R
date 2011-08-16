@@ -11,14 +11,14 @@ skiphomology <- FALSE  # TRUE just to create complexes for euler code
 cat("\n  Working on subject", subject, ".\n")
 startdate <- date()
 
-inputfile <- paste(subject, "_filtered.csv", sep = "")
+inputfile <- paste(subject, ".csv", sep = "")
 
 # NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!
 
 system.time(
 homol <- FileToHomolP(file.name = inputfile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = threshRegions,
                       thresh = threshActivity, mask = useMask, noHomol = skiphomology, omit.freq = omitFreq,
-                      kindOfBig = kindobig, drictree = inputdirP, maxDim=MAXDIM, withEuler = FALSE, tires = trighs,
+                      kindOfBig = kindobig, drictree = inputdir, maxDim=MAXDIM, withEuler = FALSE, tires = trighs,
                       DontSweatTheSmallStuff1 = donotsweat1, DontSweatTheSmallStuff2 = donotsweat2,
                       traceIt = MAXDIM, checkAcyc = FALSE, IHaveMyLimits = ihavelimits,
                       constant.comment = commentP, verbosity = vrbst, blahblahblah = bbb)
@@ -63,7 +63,7 @@ if(n > 1) {
 
 # Save output
 outputfile <- paste(subject, outputfileappendP, sep = "")
-save( homol, file = paste(outputdirP, outputfile, sep = "") )
+save( homol, file = paste(outputdir, outputfile, sep = "") )
 rm(homol, MAXDIM, trighs, omitFreq, commentP, useMask)
 
 cat("\n\n       Done with subject ", subject, " -- started", startdate, "and ended", date(), "\n")
