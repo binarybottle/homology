@@ -25,7 +25,7 @@ attach(inputdatafile)
 # FileToHomolP.R and FileToHomolFP.R parameters
 #----------------------------------------------
 # Regions
-useAllRegions <- 0  # 1 for all regions, 0 for subset (default mode regions)
+useAllRegions <- 1  # 1 for all regions, 0 for subset (default mode regions)
 if (useAllRegions == 1) {
   useMask <- NULL
   kindobig <- 37
@@ -47,11 +47,11 @@ omitFreq <- 0
 vrbst <- 2  # 0 for absolutely no comments (if bbb==0)!
 bbb <- 5    # 0 for no followup comments
 
-#-----------------------
-# FileToHomolP.R files
-# FileToHomolFP.R files
-# FTHPobjToEuler.R files
-#-----------------------
+#--------------------------
+# FileToHomolP.R and
+# FileToHomolFP.R and
+# FTHPobjToEuler.R comments
+#--------------------------
 commentHomology <- "_Homology_"
 commentFourierHomology <- "_FourierHomology_"
 commentEuler <- "_Euler_"
