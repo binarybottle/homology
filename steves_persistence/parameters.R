@@ -49,7 +49,7 @@ bbb <- 5    # 0 for no followup comments
 #---------------------
 inputdirP <- paste(maindir, "input/tables/", sep = "")
 outputdirP <- paste(maindir, "output/homolp/", sep = "")
-outputfileappendP <- paste("_PrdyHomol", commentID, ".RData", sep = "")
+outputfileappendP <- paste("_Homology_", commentID, ".RData", sep = "")
 commentP <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, ", ", commentID)
 
 #----------------------
@@ -57,7 +57,7 @@ commentP <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFre
 #----------------------
 inputdirFP <- paste(maindir, "output/homolp", sep = "")
 outputdirFP <- paste(maindir, "output/homolfp", sep = "")
-inputfileappendFP <- paste("_PrdyHomol", commentID, ".RData", sep = "")
+inputfileappendFP <- paste("_Homology_", commentID, ".RData", sep = "")
 commentFP <- paste("Fourier domain; Persistence-ready;", date(), "MAXDIM=", MAXDIM, ", trighs=", trighs,
                    ", omitFreq=", omitFreq, ", ", commentID)
 # xthresh is tricky. In the Fourier domain, for the homological analysis angular frequencies
@@ -67,13 +67,13 @@ commentFP <- paste("Fourier domain; Persistence-ready;", date(), "MAXDIM=", MAXD
 # chance to be "active", I should take as the "active" angular frequencies, instead of the
 # top 20%, half of that, viz. 10%. That means I want a 90th, not 80th percentile threshold.
 xthresh <- .9
-outputfileappendFP <- paste("_FourierHomol", 10*xthresh, ".RData", sep="")
+outputfileappendFP <- paste("_FourierHomology_", commentID, ".RData", sep="")
 
 #-----------------------
 # FTHPobjToEuler.R files
 #-----------------------
 inputdirE <- paste(maindir, "output/homolp/", sep = "")
 outputdirE <- paste(maindir, "output/euler/", sep = "")
-inputfileappendE <- paste("_PrdyHomol", commentID, ".RData", sep = "")
-outputfileappendE <- paste("_Euler", commentID, ".RData", sep = "")
+inputfileappendE <- paste("_Homology_", commentID, ".RData", sep = "")
+outputfileappendE <- paste("_Euler_", commentID, ".RData", sep = "")
 
