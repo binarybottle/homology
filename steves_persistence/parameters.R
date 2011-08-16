@@ -28,8 +28,8 @@ attach(inputdatafile)
 useAllRegions <- 1  # 1 for all regions, 0 for subset (default mode regions)
 if (useAllRegions == 1) {
   useMask <- NULL
-  kindobig <- 37
-  MAXDIM <- 1
+  MAXDIM <- 3 # 1
+  kindobig <- 22 # 37
   commentID <- "wholeBrain"
 } else {
   useMask <- unDefMode
