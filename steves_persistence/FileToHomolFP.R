@@ -16,7 +16,7 @@ inputfile <- paste(subject, outputfileappendP, sep = "")
 
 system.time( homol <- FileToHomolFP(file.name = inputfile, TSEliot = NULL, rnames.in.col.1 = FALSE,
                                     roi.num = threshRegions, thresh = threshActivity, mask = useMask, noHomol = FALSE,
-                                    omit.freq = omitFreq, kindOfBig = kindobig, maxDim=MAXDIM, drictree = inputdir,
+                                    omit.freq = omitFreq, kindOfBig = kindobig, maxDim=MAXDIM, drictree = outputdir,
                                     aList = NULL, withEuler = FALSE, tires = trighs,
                                     DontSweatTheSmallStuff1 = donotsweat1, DontSweatTheSmallStuff2 = donotsweat2,
                                     traceIt = MAXDIM, returnReducedMat = TRUE, checkAcyc = FALSE,

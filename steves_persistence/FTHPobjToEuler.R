@@ -17,7 +17,7 @@ x <- 2:4 # (i.e., 2 through 4.)
 
 # Read in file.
 inputfile <- paste(subject, outputfileappendP, sep = "")
-attach( paste(inputdir, inputfile, sep = "") )
+attach( paste(outputdir, inputfile, sep = "") )
 
 # Compute the Euler characteristics for all the frequency levels in 'x' "at once".
 # Assume that the homology in the file is packaged in something called 'homol'.
