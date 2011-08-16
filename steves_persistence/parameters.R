@@ -27,14 +27,19 @@ useAllRegions <- 0  # 1 for all regions, 0 for subset (default mode regions)
 if (useAllRegions == 1) {
   useMask <- NULL
   MAXDIM <- 1
-  trighs <- 3
   commentID <- "wholeBrain"
 } else {
   useMask <- unDefMode
-  MAXDIM <- 1 #3
-  trighs <- 3
+  MAXDIM <- 3
   commentID <- "defaultMode"
 }
+trighs <- 3
+kindobig <- 37
+ihavelimits <- 45000
+donotsweat1 <- 0
+donotsweat2 <- 12
+threshRegions <- 0.8
+threshActivity <- 0.8
 omitFreq <- 0
 vrbst <- 2  # 0 for absolutely no comments (if bbb==0)!
 bbb <- 5    # 0 for no followup comments

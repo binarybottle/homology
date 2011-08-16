@@ -15,11 +15,12 @@ inputfile <- paste(subject, inputfileappendFP, sep = "")
 # Takes an 'FileToHomolP' output file as input.
 
 system.time( homol <- FileToHomolFP(file.name = inputfile, TSEliot = NULL, rnames.in.col.1 = FALSE,
-                                    roi.num = .8, thresh = xthresh, mask = useMask, noHomol = FALSE,
-                                    omit.freq = omitFreq, kindOfBig = 37, maxDim=MAXDIM, drictree = inputdirFP,
-                                    aList = NULL, withEuler = FALSE, tires = 3, DontSweatTheSmallStuff1 = 0,
-                                    DontSweatTheSmallStuff2 = 12, traceIt = MAXDIM, returnReducedMat = TRUE,
-                                    checkAcyc = FALSE, IHaveMyLimits = 45000, constant.comment = commentFP,
+                                    roi.num = threshRegions, thresh = threshActivity, mask = useMask, noHomol = FALSE,
+                                    omit.freq = omitFreq, kindOfBig = kindobig, maxDim=MAXDIM, drictree = inputdirFP,
+                                    aList = NULL, withEuler = FALSE, tires = trighs,
+                                    DontSweatTheSmallStuff1 = donotsweat1, DontSweatTheSmallStuff2 = donotsweat2,
+                                    traceIt = MAXDIM, returnReducedMat = TRUE, checkAcyc = FALSE,
+                                    IHaveMyLimits = ihavelimits, constant.comment = commentFP,
                                     verbosity = vrbst, blahblahblah = 3) )
 
 SI()

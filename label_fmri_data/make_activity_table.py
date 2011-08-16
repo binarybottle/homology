@@ -9,11 +9,10 @@ The first column contains the label indices.
 (c) Arno Klein  .  arno@binarybottle.com  .  2011  .  MIT license
 """
 
-data_path = '/hd2/data/Brains/FunctionalConnectomes1000/NewYork_a_ADHD_part1/'
-fmri_path = '/func/rest'
+data_path = ''
 file_append = '.nii.gz'
-label_list = '/projects/homology/region_nums_names.txt'
-table_path = '/projects/homology/output/tables/'
+label_list = 'region_nums_names.txt'
+table_path = '/Users/arno/Documents/homology/steves_persistence/input/tables/'
 table_end = '_activity.csv'
 
 import os
@@ -36,13 +35,13 @@ if __name__ == '__main__':
     # Iterate over subjects
     for subject_id in os.listdir(data_path):
 
-        func_file = data_path + subject_id + fmri_path + '_' + file_append
-        label_file = data_path + subject_id + fmri_path + '_aparc2aseg' + file_append
-        out_table_file = table_path + subject_id + table_end
+        func_file = data_path + subject_id + file_append
+        label_file = data_path + subject_id '_aparc2aseg' + file_append
+        table_file = table_path + subject_id + table_end
 
         # Set up the csv file for the subject
         try:
-            f = open(out_table_file,"w")
+            f = open(table_file,"w")
         except IOError:
             raise
 
