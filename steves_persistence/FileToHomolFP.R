@@ -10,7 +10,7 @@ source("parameters.R")
 cat("\n  Working on subject", subject, ".\n")
 startdate <- date()
 
-inputfile <- paste(subject, inputfileappendFP, sep = "")
+inputfile <- paste(subject, outputfileappendP, sep = "")
 
 # Takes an 'FileToHomolP' output file as input.
 

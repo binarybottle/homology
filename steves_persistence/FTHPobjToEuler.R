@@ -16,7 +16,7 @@ x <- 2:4 # (i.e., 2 through 4.)
 #dimnames( HoustonEulers ) <- list( subjects, as.character(x) )
 
 # Read in file.
-inputfile <- paste(subject, inputfileappendE, sep = "")
+inputfile <- paste(subject, outputfileappendP, sep = "")
 attach( paste(inputdirE, inputfile, sep = "") )
 
 # Compute the Euler characteristics for all the frequency levels in 'x' "at once".
