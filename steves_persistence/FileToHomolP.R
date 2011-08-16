@@ -15,13 +15,15 @@ inputfile <- paste(subject, ".csv", sep = "")
 
 # NOTE: This time I'm using the complement of 'defaultMode' as a "mask"!
 
+commentLocal <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, ", ", commentID)
+
 system.time(
 homol <- FileToHomolP(file.name = inputfile, TSEliot = NULL, rnames.in.col.1 = TRUE, roi.num = threshRegions,
                       thresh = threshActivity, mask = useMask, noHomol = skiphomology, omit.freq = omitFreq,
                       kindOfBig = kindobig, drictree = inputdir, maxDim=MAXDIM, withEuler = FALSE, tires = trighs,
                       DontSweatTheSmallStuff1 = donotsweat1, DontSweatTheSmallStuff2 = donotsweat2,
                       traceIt = MAXDIM, checkAcyc = FALSE, IHaveMyLimits = ihavelimits,
-                      constant.comment = commentP, verbosity = vrbst, blahblahblah = bbb)
+                      constant.comment = commentLocal, verbosity = vrbst, blahblahblah = bbb)
 )
 
 SI()
@@ -62,9 +64,9 @@ if(n > 1) {
 }
 
 # Save output
-outputfile <- paste(subject, outputfileappendP, sep = "")
+outputfile <- paste(subject, commentHomology, commentID, ".RData", sep="")
 save( homol, file = paste(outputdir, outputfile, sep = "") )
-rm(homol, MAXDIM, trighs, omitFreq, commentP, useMask)
+rm(homol, MAXDIM, trighs, omitFreq, commentHomology, useMask)
 
 cat("\n\n       Done with subject ", subject, " -- started", startdate, "and ended", date(), "\n")
 # This celebratory signal indicates when a subject is finished. If you've got 40 processors going,

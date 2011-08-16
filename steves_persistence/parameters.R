@@ -16,6 +16,8 @@ if( !any(search() == "package:MASS") )  {
 # FileToHomolP.R and FileToHomolFP.R files
 #-----------------------------------------
 maindir <- "/Users/arno/Documents/homology/steves_persistence/"
+inputdir <- paste(maindir, "input/tables/", sep = "")
+outputdir <- paste(maindir, "output/", sep = "")
 inputdatafile <- paste(maindir, "Homology.RData", sep = "")
 attach(inputdatafile)
 
@@ -45,23 +47,12 @@ omitFreq <- 0
 vrbst <- 2  # 0 for absolutely no comments (if bbb==0)!
 bbb <- 5    # 0 for no followup comments
 
-#---------------------
-# FileToHomolP.R files
-#---------------------
-inputdir <- paste(maindir, "input/tables/", sep = "")
-outputdir <- paste(maindir, "output/", sep = "")
-outputfileappendP <- paste("_Homology_", commentID, ".RData", sep = "")
-commentP <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, ", ", commentID)
-
-#----------------------
-# FileToHomolFP.R files
-#----------------------
-outputfileappendFP <- paste("_FourierHomology_", commentID, ".RData", sep="")
-commentFP <- paste("Fourier domain; Persistence-ready;", date(), "MAXDIM=", MAXDIM, ", trighs=", trighs,
-                   ", omitFreq=", omitFreq, ", ", commentID)
-
 #-----------------------
+# FileToHomolP.R files
+# FileToHomolFP.R files
 # FTHPobjToEuler.R files
 #-----------------------
-outputfileappendE <- paste("_Euler_", commentID, ".RData", sep = "")
+commentHomology <- "_Homology_"
+commentFourierHomology <- "_FourierHomology_"
+commentEuler <- "_Euler_"
 

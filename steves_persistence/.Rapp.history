@@ -847,3 +847,12 @@ KleinBottle()
 KleinBottle
 ls()
 defaultMode
+load("/Users/arno/Documents/homology/steves_persistence/Homology.RData")
+ls()
+FileToHomolFP
+load("/Users/arno/Documents/homology/steves_persistence/Homology.RData")
+load("/Users/arno/Documents/homology/steves_persistence/Homology.RData")
+ls()
+FileToHomolFP
+load("/Users/arno/Documents/homology/steves_persistence/Homology.RData")
+load("/Users/arno/Documents/homology/steves_persistence/output/sub01912_Homology_defaultMode.RData")
