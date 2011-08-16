@@ -5,7 +5,8 @@ subject <- args[1]
 
 source("parameters.R")
 
-# xdsss <- 12
+#xdsss <- 12
+snL <- subject
 
 cat("\n  Working on subject", subject, ".\n")
 startdate <- date()
