@@ -1,0 +1,15 @@
+load("/Users/arno/Documents/homology/steves_persistence/output/sub01912_Homology_defaultMode.RData")
+ls()
+homol
+names(homol)
+homol$TimeSeriesMat
+ls()
+names(homol)
+homol$homology.output
+load("/Users/arno/Documents/homology/steves_persistence/output/0015001_Homology_wholeBrain.RData")
+load("/Users/arno/Documents/homology/steves_persistence/output/0015001_Homology_wholeBrain.RData")
+ls()
+names(homol)
+homol$complex
+names(homol)
+names(homol$homology.output)

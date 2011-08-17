@@ -16,8 +16,8 @@ x <- 2:4 # (i.e., 2 through 4.)
 #dimnames( HoustonEulers ) <- list( subjects, as.character(x) )
 
 # Read in file.
-inputfile <- paste(subject, outputfileappendP, sep = "")
-attach( paste(inputdirE, inputfile, sep = "") )
+inputfile <- paste(subject, commentHomology, commentID, ".RData", sep="")
+attach( paste(outputdir, inputfile, sep = "") )
 
 # Compute the Euler characteristics for all the frequency levels in 'x' "at once".
 # Assume that the homology in the file is packaged in something called 'homol'.
@@ -27,9 +27,9 @@ attach( paste(inputdirE, inputfile, sep = "") )
 HoustonEulers <- sapply( x, FTHP.obj.ToEuler, FTHP.obj = homol )
 
 # Save output
-outputfile <- paste(subject, outputfileappendE, sep = "")
-save( HoustonEulers, file = paste(outputdirE, outputfile, sep = "") )
-rm(HoustonEulers)
+outputfile <- paste(subject, commentEuler, commentID, ".RData", sep="")
+save( HoustonEulers, file = paste(outputdir, outputfile, sep = "") )
+rm(HoustonEulers, commentEuler)
 
 cat("\n\n       Done with subject ", subject, " -- started", startdate, "and ended", date(), "\n")
 # This celebratory signal indicates when a subject is finished. If you've got 40 processors going,

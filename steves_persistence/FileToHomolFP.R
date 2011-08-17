@@ -5,22 +5,26 @@ subject <- args[1]
 
 source("parameters.R")
 
-# xdsss <- 12
+#xdsss <- 12
+snL <- subject
 
 cat("\n  Working on subject", subject, ".\n")
 startdate <- date()
 
-inputfile <- paste(subject, outputfileappendP, sep = "")
+inputfile <- paste(subject, commentHomology, commentID, ".RData", sep="")
 
 # Takes an 'FileToHomolP' output file as input.
 
+commentLocal <- paste("Fourier domain; Persistence-ready;", date(), "MAXDIM=", MAXDIM, ", trighs=", trighs,
+                   ", omitFreq=", omitFreq, ", ", commentID)
+
 system.time( homol <- FileToHomolFP(file.name = inputfile, TSEliot = NULL, rnames.in.col.1 = FALSE,
                                     roi.num = threshRegions, thresh = threshActivity, mask = useMask, noHomol = FALSE,
-                                    omit.freq = omitFreq, kindOfBig = kindobig, maxDim=MAXDIM, drictree = inputdirFP,
+                                    omit.freq = omitFreq, kindOfBig = kindobig, maxDim=MAXDIM, drictree = outputdir,
                                     aList = NULL, withEuler = FALSE, tires = trighs,
                                     DontSweatTheSmallStuff1 = donotsweat1, DontSweatTheSmallStuff2 = donotsweat2,
                                     traceIt = MAXDIM, returnReducedMat = TRUE, checkAcyc = FALSE,
-                                    IHaveMyLimits = ihavelimits, constant.comment = commentFP,
+                                    IHaveMyLimits = ihavelimits, constant.comment = commentLocal,
                                     verbosity = vrbst, blahblahblah = 3) )
 
 SI()
@@ -60,9 +64,10 @@ if(n > 1) {
 }
 
 # Save output
-outputfile <- paste(subject, outputfileappendFP, sep = ".")
-save( homol, file = paste(outputdirFP, outputfile, sep = "/") )
-rm(homol, MAXDIM, trighs, omitFreq, commentFP, useMask)
+
+outputfile <- paste(subject, commentFourierHomology, commentID, ".RData", sep="")
+save( homol, file = paste(outputdir, outputfile, sep = "/") )
+rm(homol, MAXDIM, trighs, omitFreq, commentFourierHomology, useMask)
 
 cat("\n\n       Done with subject ", subject, " -- started", startdate, "and ended", date(), "\n")
 # This celebratory signal indicates when a subject is finished. If you've got 40 processors going,

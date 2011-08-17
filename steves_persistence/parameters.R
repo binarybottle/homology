@@ -16,6 +16,8 @@ if( !any(search() == "package:MASS") )  {
 # FileToHomolP.R and FileToHomolFP.R files
 #-----------------------------------------
 maindir <- "/Users/arno/Documents/homology/steves_persistence/"
+inputdir <- paste(maindir, "input/tables/", sep = "")
+outputdir <- paste(maindir, "output/", sep = "")
 inputdatafile <- paste(maindir, "Homology.RData", sep = "")
 attach(inputdatafile)
 
@@ -23,11 +25,11 @@ attach(inputdatafile)
 # FileToHomolP.R and FileToHomolFP.R parameters
 #----------------------------------------------
 # Regions
-useAllRegions <- 0  # 1 for all regions, 0 for subset (default mode regions)
+useAllRegions <- 1  # 1 for all regions, 0 for subset (default mode regions)
 if (useAllRegions == 1) {
   useMask <- NULL
-  kindobig <- 37
-  MAXDIM <- 1
+  MAXDIM <- 3 # 1
+  kindobig <- 22 # 37
   commentID <- "wholeBrain"
 } else {
   useMask <- unDefMode
@@ -45,27 +47,12 @@ omitFreq <- 0
 vrbst <- 2  # 0 for absolutely no comments (if bbb==0)!
 bbb <- 5    # 0 for no followup comments
 
-#---------------------
-# FileToHomolP.R files
-#---------------------
-inputdirP <- paste(maindir, "input/tables/", sep = "")
-outputdirP <- paste(maindir, "output/homolp/", sep = "")
-outputfileappendP <- paste("_Homology_", commentID, ".RData", sep = "")
-commentP <- paste("MAXDIM=", MAXDIM, ", trighs=", trighs, ", omitFreq=", omitFreq, ", ", commentID)
-
-#----------------------
-# FileToHomolFP.R files
-#----------------------
-inputdirFP <- paste(maindir, "output/homolp", sep = "")
-outputdirFP <- paste(maindir, "output/homolfp", sep = "")
-outputfileappendFP <- paste("_FourierHomology_", commentID, ".RData", sep="")
-commentFP <- paste("Fourier domain; Persistence-ready;", date(), "MAXDIM=", MAXDIM, ", trighs=", trighs,
-                   ", omitFreq=", omitFreq, ", ", commentID)
-
-#-----------------------
-# FTHPobjToEuler.R files
-#-----------------------
-inputdirE <- paste(maindir, "output/homolp/", sep = "")
-outputdirE <- paste(maindir, "output/euler/", sep = "")
-outputfileappendE <- paste("_Euler_", commentID, ".RData", sep = "")
+#--------------------------
+# FileToHomolP.R and
+# FileToHomolFP.R and
+# FTHPobjToEuler.R comments
+#--------------------------
+commentHomology <- "_Homology_"
+commentFourierHomology <- "_FourierHomology_"
+commentEuler <- "_Euler_"
 
