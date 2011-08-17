@@ -1,7 +1,0 @@
-load("/Users/arno/Dropbox/share_homology/Steves_homology_code/output/euler/sub01912_Euler.RData")
-ls()
-HoustonEulers
-load("/Users/arno/Dropbox/share_homology/Steves_homology_code/output/homolp/sub01912_PrdyHomolDM.RData")
-ls()
-homol
-names(homol)
