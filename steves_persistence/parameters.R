@@ -15,7 +15,7 @@ if( !any(search() == "package:MASS") )  {
 #-----------------------------------------
 # FileToHomolP.R and FileToHomolFP.R files
 #-----------------------------------------
-maindir <- "/Users/arno/Documents/homology/steves_persistence/"
+maindir <- "/Users/arno/Documents/Projects/homology/steves_persistence/"
 inputdir <- paste(maindir, "input/tables/", sep = "")
 outputdir <- paste(maindir, "output/", sep = "")
 inputdatafile <- paste(maindir, "Homology.RData", sep = "")
@@ -56,3 +56,8 @@ commentHomology <- "_Homology_"
 commentFourierHomology <- "_FourierHomology_"
 commentEuler <- "_Euler_"
 
+#--------
+# Stage 2
+#--------
+stage2dim <- 1  # Dimension in which you want to compute persistence. Repeat for all dimensions, bigger than 0, for which you've done the "stage 1" calculations.
+stage2tolevel1 <- 0  # Go all the way down to frequency level 1.
